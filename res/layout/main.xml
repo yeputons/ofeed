@@ -4,18 +4,6 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Download page"
-            android:onClick="downloadPage"
-            />
-    <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Open page"
-            android:onClick="openPage"
-            android:enabled="false"
-            android:id="@+id/openPage"
-            />
 
 </LinearLayout>
 
