@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 
 public class MainActivity extends Activity implements DownloadCompleteListener {
     private WebResource r;
+    private final ResourceOpener opener = new ResourceOpener(this);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,22 +40,7 @@ public class MainActivity extends Activity implements DownloadCompleteListener {
     }
 
     public void openPage(View view) {
-        Uri uri = Uri.parse(r.getActualUri().toString());
-        Intent intentChrome = new Intent(Intent.ACTION_VIEW);
-        intentChrome.setDataAndType(uri, "multipart/related");
-        startActivity(intentChrome);
-
-//        Intent intentDefault = new Intent(Intent.ACTION_VIEW);
-//        intentDefault.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
-//        intentDefault.setDataAndType(uri, "html/text");
-//
-//        Intent intentOther = new Intent(Intent.ACTION_VIEW);
-//        intentDefault.addCategory(Intent.CATEGORY_BROWSABLE);
-//        intentDefault.setDataAndType(uri, "html/text");
-//
-//        Intent intentChooser = Intent.createChooser(intentChrome, "Open in...");
-//        intentChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { intentDefault, intentOther });
-//        startActivity(intentChooser);
+        opener.openResource(r);
     }
 
     @Override
