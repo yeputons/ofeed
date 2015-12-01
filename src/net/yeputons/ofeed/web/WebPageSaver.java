@@ -1,10 +1,10 @@
 package net.yeputons.ofeed.web;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.net.URI;
 
 public interface WebPageSaver {
-    @NotNull
-    public WebResource savePage(@NotNull URI uri);
+    @NonNull
+    public WebResource savePage(@NonNull URI uri);
 }

@@ -1,6 +1,6 @@
 package net.yeputons.ofeed.web;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 
@@ -15,10 +15,10 @@ public interface ResourceDownload {
 
     abstract public void setDownloadCompleteListener(DownloadCompleteListener listener);
 
-    @NotNull
+    @NonNull
     abstract public State getState();
 
-    @NotNull
+    @NonNull
     abstract public File getLocalFile();
 
     public abstract void start();

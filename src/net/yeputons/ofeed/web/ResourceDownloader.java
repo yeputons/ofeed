@@ -1,8 +1,8 @@
 package net.yeputons.ofeed.web;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface ResourceDownloader {
-    @NotNull
-    public ResourceDownload createDownload(@NotNull WebResource resource);
+    @NonNull
+    public ResourceDownload createDownload(@NonNull WebResource resource);
 }

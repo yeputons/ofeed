@@ -1,8 +1,8 @@
 package net.yeputons.ofeed.web;
 
 import android.util.Log;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,16 +17,16 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DeepWebPageSaver implements WebPageSaver {
-    @NotNull private final Map<URI, WebResource> resources = new HashMap<>();
-    @NotNull private final ResourceDownloader downloader;
+    @NonNull private final Map<URI, WebResource> resources = new HashMap<>();
+    @NonNull private final ResourceDownloader downloader;
 
     private static final String TAG = DeepWebPageSaver.class.getName();
 
-    public DeepWebPageSaver(@NotNull ResourceDownloader downloader) {
+    public DeepWebPageSaver(@NonNull ResourceDownloader downloader) {
         this.downloader = downloader;
     }
 
-    @NotNull private final AtomicInteger downloadsRemaining = new AtomicInteger();
+    @NonNull private final AtomicInteger downloadsRemaining = new AtomicInteger();
 
     @Nullable private DownloadCompleteListener downloadCompleteListener = null;
 
@@ -40,9 +40,9 @@ public class DeepWebPageSaver implements WebPageSaver {
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public WebResource savePage(@NotNull final URI uri) {
+    public WebResource savePage(@NonNull final URI uri) {
         WebResource result = resources.get(uri);
         if (result != null) {
             return result;
@@ -71,8 +71,8 @@ public class DeepWebPageSaver implements WebPageSaver {
         }
     };
 
-    @NotNull
-    private ResourceDownload downloadExtraResource(@NotNull URI uri) {
+    @NonNull
+    private ResourceDownload downloadExtraResource(@NonNull URI uri) {
         WebResource resource = new WebResource(uri);
         ResourceDownload d = resource.addDownload(downloader);
         d.start();
@@ -81,8 +81,8 @@ public class DeepWebPageSaver implements WebPageSaver {
         return d;
     }
 
-    @NotNull
-    private String saveExtraResource(@NotNull String uri) {
+    @NonNull
+    private String saveExtraResource(@NonNull String uri) {
         if (uri.equals("")) {
             return "";
         }
@@ -97,7 +97,7 @@ public class DeepWebPageSaver implements WebPageSaver {
         return tmp[tmp.length - 1];
     }
 
-    private void downloadPageResources(@NotNull WebResource mainPage) {
+    private void downloadPageResources(@NonNull WebResource mainPage) {
         ResourceDownload d = mainPage.getDownloaded();
         try {
             if (d == null) {

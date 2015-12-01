@@ -1,22 +1,22 @@
 package net.yeputons.ofeed.web;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
 public class WebResource {
-    @NotNull final public URI uri;
+    @NonNull final public URI uri;
     final protected Deque<ResourceDownload> downloads = new ArrayDeque<>();
 
-    public WebResource(@NotNull URI uri) {
+    public WebResource(@NonNull URI uri) {
         this.uri = uri;
     }
 
-    @NotNull
-    public ResourceDownload addDownload(@NotNull ResourceDownloader d) {
+    @NonNull
+    public ResourceDownload addDownload(@NonNull ResourceDownloader d) {
         ResourceDownload result = d.createDownload(this);
         downloads.add(result);
         return result;
@@ -46,7 +46,7 @@ public class WebResource {
         return getLastDownload();
     }
 
-    @NotNull
+    @NonNull
     public URI getActualUri() {
         ResourceDownload d = getDownloaded();
         if (d != null) {

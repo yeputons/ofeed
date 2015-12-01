@@ -6,21 +6,21 @@ import android.net.Uri;
 import android.util.Log;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.net.URI;
 
 public class ResourceDownloadToFile implements ResourceDownload {
-    @NotNull  final private URI remoteUri;
-    @NotNull  final private File localFile;
-    @NotNull  final private DownloadManager downloadManager;
+    @NonNull  final private URI remoteUri;
+    @NonNull  final private File localFile;
+    @NonNull  final private DownloadManager downloadManager;
     @Nullable private Long downloadManagerRelatedId;
 
     private static final String TAG = ResourceDownloadToFile.class.getName();
 
-    public ResourceDownloadToFile(@NotNull URI remoteUri, @NotNull File localFile, @NotNull DownloadManager downloadManager) {
+    public ResourceDownloadToFile(@NonNull URI remoteUri, @NonNull File localFile, @NonNull DownloadManager downloadManager) {
         this.remoteUri = remoteUri;
         this.localFile = localFile;
         this.downloadManager = downloadManager;
@@ -45,7 +45,7 @@ public class ResourceDownloadToFile implements ResourceDownload {
         downloadManagerRelatedId = downloadManager.enqueue(request);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public File getLocalFile() {
         return localFile;
@@ -59,7 +59,7 @@ public class ResourceDownloadToFile implements ResourceDownload {
         DownloadCompleteBroadcastReceiver.setCompleteListener(downloadManagerRelatedId, listener);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public State getState() {
         if (downloadManagerRelatedId == null) {

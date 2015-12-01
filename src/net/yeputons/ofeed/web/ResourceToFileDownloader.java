@@ -1,7 +1,7 @@
 package net.yeputons.ofeed.web;
 
 import android.os.Environment;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.net.URI;
@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 public abstract class ResourceToFileDownloader implements ResourceDownloader {
     static private final Pattern extensionPattern = Pattern.compile("(\\.\\p{Alnum}+)$");
 
-    @NotNull
-    protected File getFileForUri(@NotNull URI uri) {
+    @NonNull
+    protected File getFileForUri(@NonNull URI uri) {
         String extension = "";
         Matcher m = extensionPattern.matcher(uri.getPath());
         if (m.matches()) {

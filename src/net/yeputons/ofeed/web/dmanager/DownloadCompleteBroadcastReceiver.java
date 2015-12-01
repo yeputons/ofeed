@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 public class DownloadCompleteBroadcastReceiver extends BroadcastReceiver {
     private static final ConcurrentMap<Long, DownloadCompleteListener> listeners = new ConcurrentHashMap<>();
 
-    public static void setCompleteListener(long id, @NotNull DownloadCompleteListener l) {
+    public static void setCompleteListener(long id, @NonNull DownloadCompleteListener l) {
         listeners.put(id, l);
     }
 

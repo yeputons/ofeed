@@ -6,7 +6,7 @@ import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.ResourceDownloader;
 import net.yeputons.ofeed.web.ResourceToFileDownloader;
 import net.yeputons.ofeed.web.WebResource;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.net.URI;
@@ -20,9 +20,9 @@ public class DownloadManagerResourceDownloader extends ResourceToFileDownloader 
         this.downloadManager = downloadManager;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public ResourceDownload createDownload(@NotNull WebResource resource) {
+    public ResourceDownload createDownload(@NonNull WebResource resource) {
         URI uri = resource.uri;
         File destination = getFileForUri(uri);
         Log.d(TAG, String.format("Download '%s' to '%s'", uri, destination));
