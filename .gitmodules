@@ -1,0 +1,3 @@
+[submodule "vk-android-sdk"]
+	path = vk-android-sdk
+	url = https://github.com/VKCOM/vk-android-sdk.git
