@@ -1,7 +1,6 @@
-package net.yeputons.ofeed.vk;
+package com.vk.sdk.api.model;
 
 import android.os.Parcel;
-import com.vk.sdk.api.model.VKApiModel;
 
 public class VKApiFeedItem extends VKApiModel {
     public static final String TYPE_POST = "post";

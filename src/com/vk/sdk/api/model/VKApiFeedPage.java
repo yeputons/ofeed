@@ -1,7 +1,6 @@
-package net.yeputons.ofeed.vk;
+package com.vk.sdk.api.model;
 
 import android.os.Parcel;
-import com.vk.sdk.api.model.*;
 
 public class VKApiFeedPage extends VKApiModel {
     public VKApiFeedItem[] items;

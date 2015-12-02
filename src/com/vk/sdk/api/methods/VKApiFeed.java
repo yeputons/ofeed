@@ -1,10 +1,8 @@
-package net.yeputons.ofeed.vk;
+package com.vk.sdk.api.methods;
 
 import com.vk.sdk.api.VKParser;
 import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.methods.VKApiBase;
-import com.vk.sdk.api.model.VKApiUserFull;
-import com.vk.sdk.api.model.VKList;
+import com.vk.sdk.api.model.VKApiFeedPage;
 import org.json.JSONException;
 import org.json.JSONObject;
 

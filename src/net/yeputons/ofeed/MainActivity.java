@@ -3,15 +3,14 @@ package net.yeputons.ofeed;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.util.Log;
 import android.widget.Toast;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.*;
-import net.yeputons.ofeed.vk.VKApiFeed;
-import net.yeputons.ofeed.vk.VKApiFeedPage;
+import com.vk.sdk.api.methods.VKApiFeed;
+import com.vk.sdk.api.model.VKApiFeedPage;
 
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
     private static final String TAG = "OFEED";
