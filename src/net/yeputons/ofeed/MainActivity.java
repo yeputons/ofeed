@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.vk.sdk.VKAccessToken;
@@ -14,11 +16,23 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.*;
 import com.vk.sdk.api.methods.VKApiFeed;
-import com.vk.sdk.api.model.VKApiFeedPage;
+import com.vk.sdk.api.model.*;
+
+import java.util.*;
 
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
     private static final String TAG = "ofeed";
     private Menu optionsMenu;
+
+    static final Map<Integer, VKApiUser> users = new HashMap<>();
+    static final Map<Integer, VKApiCommunity> groups = new HashMap<>();
+    private final TreeSet<VKApiFeedItem> feed = new TreeSet<>(new Comparator<VKApiFeedItem>() {
+        @Override
+        public int compare(VKApiFeedItem a, VKApiFeedItem b) {
+            if (a.date == b.date) return a.post.id - b.post.id;
+            return (a.date < b.date) ? 1 : -1;
+        }
+    });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +69,10 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
 
     public void logout(MenuItem item) {
         VKSdk.logout();
+        users.clear();
+        groups.clear();
+        feed.clear();
+        updateFeed();
         ((TextView) findViewById(R.id.textCurrentUser)).setText("Not logged in");
         updateMenuStatus();
     }
@@ -76,6 +94,18 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             @Override
             public void onComplete(VKResponse response) {
                 VKApiFeedPage page = (VKApiFeedPage) response.parsedModel;
+                for (VKApiCommunity c : page.groups) {
+                    groups.put(c.getId(), c);
+                }
+                for (VKApiUser u : page.profiles) {
+                    users.put(u.getId(), u);
+                }
+                for (VKApiFeedItem i : page.items) {
+                    if (i.type.equals(VKApiFeedItem.TYPE_POST)) {
+                        feed.add(i);
+                    }
+                }
+                updateFeed();
                 Log.d(TAG, "next_from=" + page.next_from);
             }
 
@@ -89,6 +119,16 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 Toast.makeText(MainActivity.this, String.format("Progress %d/%d", bytesLoaded, bytesTotal), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateFeed() {
+        ListView list = (ListView) findViewById(R.id.listFeed);
+        VKApiPost posts[] = new VKApiPost[feed.size()];
+        int id = 0;
+        for (VKApiFeedItem p : feed) {
+            posts[id++] = p.post;
+        }
+        list.setAdapter(new PostViewAdapter(this, posts));
     }
 
     @Override
