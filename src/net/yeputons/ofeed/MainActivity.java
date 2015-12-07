@@ -17,7 +17,7 @@ import com.vk.sdk.api.methods.VKApiFeed;
 import com.vk.sdk.api.model.VKApiFeedPage;
 
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
-    private static final String TAG = "OFEED";
+    private static final String TAG = "ofeed";
     private Menu optionsMenu;
 
     @Override
