@@ -53,30 +53,44 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
         }
         if (imageUri != null) {
             final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);
-            final String imageUriFinal = imageUri;
-            final WebResource resource = WebResourcesCache.getDownloadingWebResource(URI.create(imageUriFinal));
+            final URI imageUriFinal = URI.create(imageUri);
             imageView.setTag(imageUriFinal);
-            imageView.setImageURI(null);
-            resource.setOrRunDownloadCompleteListener(new DownloadCompleteListener() {
+            WebResource cached = WebResourcesCache.getCachedDownloadingWebResource(imageUriFinal);
+            if (cached != null) {
+                ResourceDownload download = cached.getDownloaded();
+                if (download != null) {
+                    imageView.setImageURI(Uri.fromFile(download.getLocalFile()));
+                } else {
+                    imageView.setImageURI(null);
+                }
+            }
+            new AsyncTask<Void, Void, Void>() {
                 @Override
-                public void onDownloadComplete() {
-                    if (imageView.getTag() != imageUriFinal) {
-                        return;
-                    }
-                    final ResourceDownload d = resource.getDownloaded();
-                    final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
-                    imageView.post(new Runnable() {
+                protected Void doInBackground(Void... voids) {
+                    final WebResource resource = WebResourcesCache.getDownloadingWebResource(imageUriFinal);
+                    resource.setOrRunDownloadCompleteListener(new DownloadCompleteListener() {
                         @Override
-                        public void run() {
-                            if (d == null) {
-                                Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
+                        public void onDownloadComplete() {
+                            if (imageView.getTag() != imageUriFinal) {
                                 return;
                             }
-                            imageView.setImageURI(resultingUri);
+                            final ResourceDownload d = resource.getDownloaded();
+                            final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
+                            imageView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (d == null) {
+                                        Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    imageView.setImageURI(resultingUri);
+                                }
+                            });
                         }
                     });
+                    return null;
                 }
-            });
+            }.execute();
         }
         ((TextView) postView.findViewById(R.id.postAuthorName)).setText(name);
         return postView;

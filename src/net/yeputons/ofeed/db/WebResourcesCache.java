@@ -3,6 +3,7 @@ package net.yeputons.ofeed.db;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 import net.yeputons.ofeed.OfeedApplication;
@@ -61,6 +62,11 @@ public class WebResourcesCache {
         }
         inMemoryResources.put(uri, result);
         return result;
+    }
+
+    @Nullable
+    public static WebResource getCachedDownloadingWebResource(@NonNull URI uri) {
+        return inMemoryResources.get(uri);
     }
 
     @NonNull
