@@ -37,14 +37,14 @@ public class WebResourcesCache {
             if (foundList.size() > 1) {
                 Log.e(TAG, "Found more than one WebResource for an URI: " + uri);
             }
-            while (!foundList.isEmpty()) {
-                foundFile = new File(foundList.get(0).localFile);
+            for (CachedWebResource attempt : foundList) {
+                foundFile = new File(attempt.localFile);
                 if (foundFile.canRead()) {
                     break;
                 } else {
                     Log.w(TAG, "File disappeared from cache: " + foundFile.toString() + " for " + uri.toString());
                     foundFile = null;
-                    dao.delete(foundList.get(0));
+                    dao.delete(attempt);
                 }
             }
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class WebResourcesCache {
 
     @NonNull
     public static WebResource getDownloadingWebResource(@NonNull URI uri) {
-        WebResource resource  = getWebResource(uri);
+        final WebResource resource  = getWebResource(uri);
         ResourceDownload download = resource.getActualDownload();
         if (download != null) {
             if (download.getState() == ResourceDownload.State.NOT_STARTED) {
@@ -81,8 +81,22 @@ public class WebResourcesCache {
             }
         }
         if (download == null) {
-            ResourceDownload d = resource.addDownload(OfeedApplication.getDownloader());
+            final ResourceDownload d = resource.addDownload(OfeedApplication.getDownloader());
             d.start();
+            d.addDownloadCompleteListener(new DownloadCompleteListener() {
+                @Override
+                public void onDownloadComplete() {
+                    Dao<CachedWebResource, Integer> dao = DbHelper.get().getCachedWebResourcesDao();
+                    CachedWebResource r = new CachedWebResource();
+                    r.uri = resource.uri.toString();
+                    r.localFile = d.getLocalFile().getAbsolutePath();
+                    try {
+                        dao.create(r);
+                    } catch (SQLException e) {
+                        Log.e(TAG, "Unable to save downloaded resource into db", e);
+                    }
+                }
+            });
         }
         return resource;
     }
