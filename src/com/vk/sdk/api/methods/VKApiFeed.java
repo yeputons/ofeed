@@ -1,5 +1,7 @@
 package com.vk.sdk.api.methods;
 
+import android.support.annotation.Nullable;
+import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKParser;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.model.VKApiFeedPage;
@@ -8,7 +10,11 @@ import org.json.JSONObject;
 
 public class VKApiFeed extends VKApiBase {
     public VKRequest get() {
-        return prepareRequest("get", null, new VKParser() {
+        return get(null);
+    }
+
+    public VKRequest get(@Nullable VKParameters params) {
+        return prepareRequest("get", params, new VKParser() {
             @Override
             public Object createModel(JSONObject object) {
                 try {
