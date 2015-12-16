@@ -90,7 +90,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     public void onResult(final VKAccessToken res) {
         ((TextView) findViewById(R.id.textCurrentUser)).setText("UserId = " + res.userId);
         updateMenuStatus();
-        new VKApiFeed().get().executeWithListener(new VKRequest.VKRequestListener() {
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 100)).executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 VKApiFeedPage page = (VKApiFeedPage) response.parsedModel;
