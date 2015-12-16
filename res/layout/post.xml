@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" android:background="@color/vk_grey_color" android:padding="8dp">
+              android:layout_height="wrap_content" android:background="@color/vk_grey_color" android:padding="8dp">
 
     <LinearLayout
             android:orientation="horizontal"
@@ -34,7 +34,7 @@
     </LinearLayout>
     <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20pt"
             android:text="Post text"
             android:id="@+id/postText" android:phoneNumber="false" android:singleLine="false"
             android:textColor="@color/vk_black"/>
