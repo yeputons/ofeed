@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.j256.ormlite.dao.Dao;
+import net.yeputons.ofeed.OfeedApplication;
+import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.ResourceDownloader;
 import net.yeputons.ofeed.web.WebResource;
@@ -26,6 +28,7 @@ public class WebResourcesCache {
         if (result != null) {
             return result;
         }
+        result = new WebResource(uri);
         File foundFile = null;
         try {
             Dao<CachedWebResource, Integer> dao = DbHelper.get().getCachedWebResourcesDao();
@@ -46,7 +49,6 @@ public class WebResourcesCache {
         } catch (SQLException e) {
             Log.e(TAG, "Error while retrieving WebResource from DB cache", e);
         }
-        result = new WebResource(uri);
         if (foundFile != null) {
             final CachedResourceDownload download = new CachedResourceDownload(foundFile);
             result.addDownload(new ResourceDownloader() {
@@ -62,7 +64,7 @@ public class WebResourcesCache {
     }
 
     @NonNull
-    public static synchronized WebResource getDownloadingWebResource(@NonNull URI uri) {
+    public static WebResource getDownloadingWebResource(@NonNull URI uri) {
         WebResource resource  = getWebResource(uri);
         ResourceDownload download = resource.getActualDownload();
         if (download != null) {
@@ -72,7 +74,10 @@ public class WebResourcesCache {
                 download = null;
             }
         }
-        // TODO: start new download
+        if (download == null) {
+            ResourceDownload d = resource.addDownload(OfeedApplication.getDownloader());
+            d.start();
+        }
         return resource;
     }
 }

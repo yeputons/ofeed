@@ -67,4 +67,16 @@ public class WebResource {
             return uri;
         }
     }
+
+    public void setOrRunDownloadCompleteListener(DownloadCompleteListener downloadCompleteListener) {
+        ResourceDownload download = getActualDownload();
+        if (download == null) {
+            throw new IllegalStateException("No actual download");
+        }
+        if (download.getState() == ResourceDownload.State.COMPLETED) {
+            downloadCompleteListener.onDownloadComplete();
+        } else {
+            download.setDownloadCompleteListener(downloadCompleteListener);
+        }
+    }
 }

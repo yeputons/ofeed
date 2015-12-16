@@ -1,8 +1,9 @@
 package net.yeputons.ofeed;
 
-import android.app.DownloadManager;
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,22 +13,20 @@ import android.widget.Toast;
 import com.vk.sdk.api.model.VKApiCommunity;
 import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKApiUser;
+import net.yeputons.ofeed.db.WebResourcesCache;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.WebResource;
-import net.yeputons.ofeed.web.dmanager.DownloadManagerResourceDownloader;
 
 import java.net.URI;
 import java.util.Date;
 
 public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
     private final VKApiPost[] values;
-    private final DownloadManagerResourceDownloader downloader;
 
     public PostViewAdapter(Context context, VKApiPost[] values) {
         super(context, R.layout.post, values);
         this.values = values;
-        downloader = new DownloadManagerResourceDownloader((DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE));
     }
 
     @Override
@@ -51,21 +50,20 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
         }
         if (imageUri != null) {
             final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);
-            final WebResource resource = new WebResource(URI.create(imageUri));
-            final ResourceDownload d = resource.addDownload(downloader);
-            d.start();
-            d.setDownloadCompleteListener(new DownloadCompleteListener() {
+            final WebResource resource = WebResourcesCache.getDownloadingWebResource(URI.create(imageUri));
+            resource.setOrRunDownloadCompleteListener(new DownloadCompleteListener() {
                 @Override
                 public void onDownloadComplete() {
+                    final ResourceDownload d = resource.getDownloaded();
+                    final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
                     imageView.post(new Runnable() {
                         @Override
                         public void run() {
-                            ResourceDownload d = resource.getDownloaded();
                             if (d == null) {
                                 Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            imageView.setImageURI(Uri.fromFile(d.getLocalFile()));
+                            imageView.setImageURI(resultingUri);
                         }
                     });
                 }
