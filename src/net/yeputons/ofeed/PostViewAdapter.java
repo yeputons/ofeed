@@ -31,7 +31,10 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View postView = View.inflate(getContext(), R.layout.post, null);
+        View postView = convertView;
+        if (postView == null || postView.findViewById(R.id.postText) == null) {
+            postView = View.inflate(getContext(), R.layout.post, null);
+        }
 
         VKApiPost post = values[position];
 
@@ -50,10 +53,16 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
         }
         if (imageUri != null) {
             final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);
-            final WebResource resource = WebResourcesCache.getDownloadingWebResource(URI.create(imageUri));
+            final String imageUriFinal = imageUri;
+            final WebResource resource = WebResourcesCache.getDownloadingWebResource(URI.create(imageUriFinal));
+            imageView.setTag(imageUriFinal);
+            imageView.setImageURI(null);
             resource.setOrRunDownloadCompleteListener(new DownloadCompleteListener() {
                 @Override
                 public void onDownloadComplete() {
+                    if (imageView.getTag() != imageUriFinal) {
+                        return;
+                    }
                     final ResourceDownload d = resource.getDownloaded();
                     final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
                     imageView.post(new Runnable() {
