@@ -16,7 +16,7 @@ public abstract class ResourceToFileDownloader implements ResourceDownloader {
     protected File getFileForUri(@NonNull URI uri) {
         String extension = "";
         Matcher m = extensionPattern.matcher(uri.getPath());
-        if (m.matches()) {
+        if (m.find()) {
             extension = m.group(1);
         }
         return new File(
