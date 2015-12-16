@@ -14,7 +14,7 @@ public class CachedResourceDownload implements ResourceDownload {
     }
 
     @Override
-    public void setDownloadCompleteListener(DownloadCompleteListener listener) {
+    public void addDownloadCompleteListener(DownloadCompleteListener listener) {
     }
 
     @NonNull

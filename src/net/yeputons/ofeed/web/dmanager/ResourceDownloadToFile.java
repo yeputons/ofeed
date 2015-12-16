@@ -52,11 +52,11 @@ public class ResourceDownloadToFile implements ResourceDownload {
     }
 
     @Override
-    public void setDownloadCompleteListener(DownloadCompleteListener listener) {
+    public void addDownloadCompleteListener(DownloadCompleteListener listener) {
         if (downloadManagerRelatedId == null) {
             throw new IllegalStateException("Download is not started");
         }
-        DownloadCompleteBroadcastReceiver.setCompleteListener(downloadManagerRelatedId, listener);
+        DownloadCompleteBroadcastReceiver.addCompleteListener(downloadManagerRelatedId, listener);
     }
 
     @NonNull

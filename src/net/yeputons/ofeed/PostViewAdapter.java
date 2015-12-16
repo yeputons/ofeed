@@ -68,7 +68,7 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
                 @Override
                 protected Void doInBackground(Void... voids) {
                     final WebResource resource = WebResourcesCache.getDownloadingWebResource(imageUriFinal);
-                    resource.setOrRunDownloadCompleteListener(new DownloadCompleteListener() {
+                    resource.addOrRunDownloadCompleteListener(new DownloadCompleteListener() {
                         @Override
                         public void onDownloadComplete() {
                             if (imageView.getTag() != imageUriFinal) {

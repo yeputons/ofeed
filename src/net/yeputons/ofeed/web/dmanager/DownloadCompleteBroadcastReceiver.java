@@ -8,23 +8,39 @@ import android.util.Log;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
 import android.support.annotation.NonNull;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DownloadCompleteBroadcastReceiver extends BroadcastReceiver {
-    private static final ConcurrentMap<Long, DownloadCompleteListener> listeners = new ConcurrentHashMap<>();
+    private static final Map<Long, List<DownloadCompleteListener>> listeners = new HashMap<>();
 
-    public static void setCompleteListener(long id, @NonNull DownloadCompleteListener l) {
-        listeners.put(id, l);
+    public static void addCompleteListener(long id, @NonNull DownloadCompleteListener l) {
+        synchronized (listeners) {
+            List<DownloadCompleteListener> ls = listeners.get(id);
+            if (ls == null) {
+                ls = new ArrayList<DownloadCompleteListener>();
+                ls.add(l);
+                listeners.put(id, ls);
+            } else {
+                ls.add(l);
+            }
+        }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-        DownloadCompleteListener l = listeners.remove(id);
-        if (l != null) {
-            Log.i("TAG", "Download completed: " + id);
-            l.onDownloadComplete();
+        synchronized (listeners) {
+            List<DownloadCompleteListener> ls = listeners.remove(id);
+            if (ls != null) {
+                Log.i("TAG", "Download completed: " + id);
+                for (DownloadCompleteListener l : ls) {
+                    l.onDownloadComplete();
+                }
+            }
         }
     }
 }

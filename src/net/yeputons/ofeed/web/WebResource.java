@@ -68,7 +68,7 @@ public class WebResource {
         }
     }
 
-    public void setOrRunDownloadCompleteListener(DownloadCompleteListener downloadCompleteListener) {
+    public void addOrRunDownloadCompleteListener(DownloadCompleteListener downloadCompleteListener) {
         ResourceDownload download = getActualDownload();
         if (download == null) {
             throw new IllegalStateException("No actual download");
@@ -76,7 +76,7 @@ public class WebResource {
         if (download.getState() == ResourceDownload.State.COMPLETED) {
             downloadCompleteListener.onDownloadComplete();
         } else {
-            download.setDownloadCompleteListener(downloadCompleteListener);
+            download.addDownloadCompleteListener(downloadCompleteListener);
         }
     }
 }

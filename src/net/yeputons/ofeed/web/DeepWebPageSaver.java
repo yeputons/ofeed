@@ -52,7 +52,7 @@ public class DeepWebPageSaver implements WebPageSaver {
         ResourceDownload download = result.addDownload(downloader);
         download.start();
         downloadsRemaining.incrementAndGet();
-        download.setDownloadCompleteListener(new DownloadCompleteListener() {
+        download.addDownloadCompleteListener(new DownloadCompleteListener() {
             @Override
             public void onDownloadComplete() {
                 downloadPageResources(mainPage);
@@ -77,7 +77,7 @@ public class DeepWebPageSaver implements WebPageSaver {
         ResourceDownload d = resource.addDownload(downloader);
         d.start();
         downloadsRemaining.incrementAndGet();
-        d.setDownloadCompleteListener(generalDownloadCompleteListener);
+        d.addDownloadCompleteListener(generalDownloadCompleteListener);
         return d;
     }
 

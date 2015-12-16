@@ -13,7 +13,7 @@ public interface ResourceDownload {
         FAILED
     }
 
-    abstract public void setDownloadCompleteListener(DownloadCompleteListener listener);
+    abstract public void addDownloadCompleteListener(DownloadCompleteListener listener);
 
     @NonNull
     abstract public State getState();
