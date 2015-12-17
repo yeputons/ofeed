@@ -31,7 +31,7 @@ public class PostView extends LinearLayout {
     private final TextView postDate;
     private final ImageView postAuthorPhoto;
 
-    private String imageUri;
+    private URI imageUri;
 
     public PostView(Context context) {
         super(context);
@@ -46,7 +46,7 @@ public class PostView extends LinearLayout {
         postText.setText(post.text);
         postDate.setText(new Date(post.date * 1000).toString());
 
-        imageUri = null;
+        String imageUriStr = null;
         String name = "N/A";
         if (post.from_id >= 0) {
             CachedUser user = null;
@@ -56,7 +56,7 @@ public class PostView extends LinearLayout {
                 Log.e(TAG, "Unable to load user from db", e);
             }
             if (user != null) {
-                imageUri = user.photo_100;
+                imageUriStr = user.photo_100;
                 name = user.first_name + " " + user.last_name;
             }
         } else {
@@ -67,9 +67,14 @@ public class PostView extends LinearLayout {
                 Log.e(TAG, "Unable to load group from db", e);
             }
             if (group != null) {
-                imageUri = group.photo_100;
+                imageUriStr = group.photo_100;
                 name = group.name;
             }
+        }
+        if (imageUriStr != null) {
+            this.imageUri = URI.create(imageUriStr);
+        } else {
+            this.imageUri = null;
         }
 
         startImageDownload();
@@ -82,47 +87,49 @@ public class PostView extends LinearLayout {
             return;
         }
 
-        final URI imageUriFinal = URI.create(imageUri);
-        WebResource cached = WebResourcesCache.getCachedDownloadingWebResource(imageUriFinal);
-        boolean found = false;
+        final URI downloadingImageUri = imageUri;
+        WebResource cached = WebResourcesCache.getCachedDownloadingWebResource(downloadingImageUri);
         if (cached != null) {
             ResourceDownload download = cached.getDownloaded();
             if (download != null) {
                 postAuthorPhoto.setImageURI(Uri.fromFile(download.getLocalFile()));
-                found = true;
+                return;
             }
         }
-        if (!found) {
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    final WebResource resource = WebResourcesCache.getDownloadingWebResource(imageUriFinal);
-                    resource.addOrRunDownloadCompleteListener(new DownloadCompleteListener() {
-                        @Override
-                        public void onDownloadComplete() {
-                            if (postAuthorPhoto.getTag() != imageUriFinal) {
-                                return;
-                            }
-                            final ResourceDownload d = resource.getDownloaded();
-                            final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
-                            postAuthorPhoto.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (postAuthorPhoto.getTag() != imageUriFinal) {
-                                        return;
-                                    }
-                                    if (d == null) {
-                                        Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    postAuthorPhoto.setImageURI(resultingUri);
-                                }
-                            });
-                        }
-                    });
-                    return null;
-                }
-            }.execute();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                final WebResource resource = WebResourcesCache.getDownloadingWebResource(downloadingImageUri);
+                resource.addOrRunDownloadCompleteListener(new DownloadCompleteListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        imageDownloadCompleted(resource);
+                    }
+                });
+                return null;
+            }
+        }.execute();
+    }
+
+    private void imageDownloadCompleted(final WebResource resource) {
+        if (imageUri != resource.uri) {
+            return;
         }
+        final ResourceDownload d = resource.getDownloaded();
+        final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
+        postAuthorPhoto.post(new Runnable() {
+            @Override
+            public void run() {
+                if (imageUri != resource.uri) {
+                    return;
+                }
+                if (d == null) {
+                    Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
+                } else {
+                    postAuthorPhoto.setImageURI(resultingUri);
+                }
+            }
+        });
     }
 }
