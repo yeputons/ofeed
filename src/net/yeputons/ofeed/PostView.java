@@ -130,7 +130,7 @@ public class PostView extends LinearLayout {
     }
 
     private void imageDownloadCompleted(final WebResource resource) {
-        if (imageUri != resource.uri) {
+        if (!imageUri.equals(resource.uri)) {
             return;
         }
         final ResourceDownload d = resource.getDownloaded();
@@ -138,7 +138,7 @@ public class PostView extends LinearLayout {
         postAuthorPhoto.post(new Runnable() {
             @Override
             public void run() {
-                if (imageUri != resource.uri) {
+                if (!imageUri.equals(resource.uri)) {
                     return;
                 }
                 if (d == null) {
