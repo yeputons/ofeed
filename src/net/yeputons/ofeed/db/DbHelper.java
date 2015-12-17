@@ -16,11 +16,13 @@ import java.sql.SQLException;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = WebResourcesCache.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static volatile DbHelper dbHelper;
 
     private volatile Dao<CachedWebResource, String> cachedWebResourcesDao;
     private volatile Dao<CachedFeedItem, String> cachedFeedItemDao;
+    private volatile Dao<CachedUser, Integer> cachedUserDao;
+    private volatile Dao<CachedGroup, Integer> cachedGroupDao;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,6 +33,8 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.createTable(connectionSource, CachedWebResource.class);
             TableUtils.createTable(connectionSource, CachedFeedItem.class);
+            TableUtils.createTable(connectionSource, CachedUser.class);
+            TableUtils.createTable(connectionSource, CachedGroup.class);
         } catch (SQLException e) {
             Log.e(TAG, "Error while creating DB", e);
             throw new RuntimeException(e);
@@ -56,6 +60,15 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
                 TableUtils.createTable(connectionSource, CachedFeedItem.class);
             } catch (SQLException e) {
                 Log.e(TAG, "Error while creating CachedFeedItem table");
+                throw new RuntimeException(e);
+            }
+        }
+        if (oldVer <= 6) {
+            try {
+                TableUtils.createTable(connectionSource, CachedGroup.class);
+                TableUtils.createTable(connectionSource, CachedUser.class);
+            } catch (SQLException e) {
+                Log.e(TAG, "Error while creating CachedGroup and CachedUser tables");
                 throw new RuntimeException(e);
             }
         }
@@ -93,6 +106,40 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return cachedFeedItemDao;
+    }
+
+    @NonNull
+    public Dao<CachedUser, Integer> getCachedUserDao() {
+        if (cachedUserDao == null) {
+            synchronized (this) {
+                if (cachedUserDao == null) {
+                    try {
+                        cachedUserDao = DaoManager.createDao(getConnectionSource(), CachedUser.class);
+                    } catch (SQLException e) {
+                        Log.e(TAG, "Cannot create DAO", e);
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return cachedUserDao;
+    }
+
+    @NonNull
+    public Dao<CachedGroup, Integer> getCachedGroupDao() {
+        if (cachedGroupDao == null) {
+            synchronized (this) {
+                if (cachedGroupDao == null) {
+                    try {
+                        cachedGroupDao = DaoManager.createDao(getConnectionSource(), CachedGroup.class);
+                    } catch (SQLException e) {
+                        Log.e(TAG, "Cannot create DAO", e);
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return cachedGroupDao;
     }
 
     @NonNull
