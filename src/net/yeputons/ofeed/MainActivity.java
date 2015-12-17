@@ -132,7 +132,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     public void logout(MenuItem item) {
         VKSdk.logout();
         clearCache(item);
-        ((TextView) findViewById(R.id.textCurrentUser)).setText("Not logged in");
         updateMenuStatus();
     }
 
@@ -224,7 +223,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
 
     @Override
     public void onResult(final VKAccessToken res) {
-        ((TextView) findViewById(R.id.textCurrentUser)).setText("UserId = " + res.userId);
         updateMenuStatus();
         loadBeginning(null);
     }
