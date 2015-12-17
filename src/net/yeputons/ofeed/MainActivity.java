@@ -68,9 +68,23 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         VKSdk.login(this, "friends", "wall");
     }
 
+    public void clearCache(MenuItem item) {
+        DbHelper h = DbHelper.get();
+        try {
+            h.getCachedFeedItemDao().deleteBuilder().delete();
+            h.getCachedGroupDao().deleteBuilder().delete();
+            h.getCachedUserDao().deleteBuilder().delete();
+            h.getCachedWebResourcesDao().deleteBuilder().delete();
+        } catch (SQLException e) {
+            Log.e(TAG, "Unable to clear cache", e);
+            Toast.makeText(this, "Error while clearing cache, it may become inconsistent", Toast.LENGTH_LONG).show();
+        }
+        updateFeed();
+    }
+
     public void logout(MenuItem item) {
         VKSdk.logout();
-        updateFeed();
+        clearCache(item);
         ((TextView) findViewById(R.id.textCurrentUser)).setText("Not logged in");
         updateMenuStatus();
     }
