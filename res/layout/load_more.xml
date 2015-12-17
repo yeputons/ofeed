@@ -6,7 +6,7 @@
 
     <Button
             android:layout_width="fill_parent"
-            android:layout_height="40pt"
+            android:layout_height="wrap_content"
             android:text="Load feed here..."
             android:id="@+id/buttonLoadMore" android:layout_gravity="center"/>
 </LinearLayout>
