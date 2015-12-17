@@ -9,8 +9,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="20pt"
+                android:layout_height="20pt"
                 android:id="@+id/postAuthorPhoto" android:layout_marginRight="4dp"/>
         <LinearLayout
                 android:orientation="vertical"
