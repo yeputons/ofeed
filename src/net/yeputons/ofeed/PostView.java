@@ -1,6 +1,7 @@
 package net.yeputons.ofeed;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -63,6 +64,18 @@ public class PostView extends LinearLayout {
         postCopyText = (TextView) findViewById(R.id.postCopyText);
         postCopyDate = (TextView) findViewById(R.id.postCopyDate);
         postCopyAuthorPhoto = (DownloadableImageView) findViewById(R.id.postCopyAuthorPhoto);
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PostView, 0, 0);
+        try {
+            if (!a.getBoolean(R.styleable.PostView_compact, true)) {
+                postText.setMaxLines(Integer.MAX_VALUE);
+                postText.setEllipsize(null);
+                postCopyText.setMaxLines(Integer.MAX_VALUE);
+                postCopyText.setEllipsize(null);
+            }
+        } finally {
+            a.recycle();
+        }
     }
 
     private static class PostAuthorInformation {
