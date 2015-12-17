@@ -26,7 +26,9 @@ import net.yeputons.ofeed.db.DbHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
@@ -154,11 +156,16 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             final Dao<CachedUser, Integer> userDao = DbHelper.get().getCachedUserDao();
             final Dao<CachedGroup, Integer> groupDao = DbHelper.get().getCachedGroupDao();
             final ArrayList<VKApiFeedItem> feed = new ArrayList<VKApiFeedItem>();
+            if (page.items.length == 0) {
+                return;
+            }
+
             for (VKApiFeedItem item : page.items) {
                 if (item.type.equals(VKApiFeedItem.TYPE_POST)) {
                     feed.add(item);
                 }
             }
+            final CachedFeedItem pageEndPlaceholder = new CachedFeedItem(page.items[page.items.length - 1], page.next_from);
             final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
             try {
                 userDao.callBatchTasks(new Callable<Void>() {
@@ -182,25 +189,28 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 itemDao.callBatchTasks(new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
+                        boolean pageDoesNotContinue = true;
                         for (int i = 0; i < feed.size(); i++) {
                             CachedFeedItem item = new CachedFeedItem(feed.get(i));
                             if (i + 1 == feed.size()) {
-                                item.nextPageToLoad = page.next_from;
+                                List<CachedFeedItem> old =
+                                        itemDao.query(
+                                                itemDao.queryBuilder()
+                                                        .selectColumns("nextPageToLoad")
+                                                        .where().eq("id", item.id).prepare());
+                                if (!old.isEmpty() && old.get(0).nextPageToLoad.isEmpty()) {
+                                    item.nextPageToLoad = "";
+                                    pageDoesNotContinue = false;
+                                } else {
+                                    item.nextPageToLoad = page.next_from;
+                                }
                             } else {
                                 item.nextPageToLoad = "";
                             }
-                            List<CachedFeedItem> old =
-                                    itemDao.query(
-                                            itemDao.queryBuilder()
-                                                    .selectColumns("nextPageToLoad")
-                                                    .where().eq("id", item.id).prepare());
-                            if (!old.isEmpty() && old.get(0).nextPageToLoad.isEmpty()) {
-                                item.nextPageToLoad = "";
-                            }
                             itemDao.createOrUpdate(item);
-                            if (!item.nextPageToLoad.isEmpty()) {
-                                itemDao.createOrUpdate(new CachedFeedItem(feed.get(i), item.nextPageToLoad));
-                            }
+                        }
+                        if (pageDoesNotContinue) {
+                            itemDao.createOrUpdate(pageEndPlaceholder);
                         }
                         return null;
                     }
