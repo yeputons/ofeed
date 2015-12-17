@@ -1,15 +1,12 @@
 package net.yeputons.ofeed;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.vk.sdk.api.model.VKApiCommunity;
 import com.vk.sdk.api.model.VKApiPost;
-import com.vk.sdk.api.model.VKApiUser;
 import net.yeputons.ofeed.db.*;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
@@ -20,12 +17,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostViewAdapter extends ArrayAdapter<CachedFeedItem> {
-    private static final String TAG = PostViewAdapter.class.getName();
+public class FeedListViewAdapter extends ArrayAdapter<CachedFeedItem> {
+    private static final String TAG = FeedListViewAdapter.class.getName();
     private final ArrayList<CachedFeedItem> values;
     private final MainActivity mainActivity;
 
-    public PostViewAdapter(MainActivity mainActivity, ArrayList<CachedFeedItem> values) {
+    public FeedListViewAdapter(MainActivity mainActivity, ArrayList<CachedFeedItem> values) {
         super(mainActivity, R.layout.post, values);
         this.values = values;
         this.mainActivity = mainActivity;

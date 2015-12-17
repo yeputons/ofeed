@@ -3,7 +3,6 @@ package net.yeputons.ofeed;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,7 +10,6 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.vk.sdk.VKAccessToken;
@@ -27,9 +25,7 @@ import net.yeputons.ofeed.db.DbHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
@@ -234,7 +230,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         }
 
         ListView list = (ListView) findViewById(R.id.listFeed);
-        list.setAdapter(new PostViewAdapter(this, posts));
+        list.setAdapter(new FeedListViewAdapter(this, posts));
     }
 
     @Override
