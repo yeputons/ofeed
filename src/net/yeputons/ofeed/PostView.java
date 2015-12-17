@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,15 @@ public class PostView extends LinearLayout {
     private final DownloadableImageView postCopyAuthorPhoto;
 
     public PostView(Context context) {
-        super(context);
+        this(context, null, 0);
+    }
+
+    public PostView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public PostView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         inflate(context, R.layout.post, this);
         postAuthorName = (TextView) findViewById(R.id.postAuthorName);
         postText = (TextView) findViewById(R.id.postText);
