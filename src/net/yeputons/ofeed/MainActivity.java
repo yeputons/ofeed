@@ -105,16 +105,21 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
                 feedGetListener.attemptFailed(request, attemptNumber, totalAttempts);
                 adapter.completePageLoad(startFrom);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onError(VKError error) {
                 feedGetListener.onError(error);
+                adapter.completePageLoad(startFrom);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
                 feedGetListener.onProgress(progressType, bytesLoaded, bytesTotal);
+                adapter.completePageLoad(startFrom);
+                adapter.notifyDataSetChanged();
             }
         });
     }
