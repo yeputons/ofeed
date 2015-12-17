@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,37 +44,48 @@ public class PostView extends LinearLayout {
         postAuthorPhoto = (DownloadableImageView) findViewById(R.id.postAuthorPhoto);
     }
 
+    private static class PostAuthorInformation {
+        @NonNull public final String name;
+        @Nullable public final String imageUriStr;
+
+        private PostAuthorInformation(@NonNull String name, @Nullable String imageUriStr) {
+            this.name = name;
+            this.imageUriStr = imageUriStr;
+        }
+    }
+
     public void setPost(@NonNull VKApiPost post) {
         postText.setText(post.text);
         postDate.setText(formatPostDate(post.date));
 
-        String imageUriStr = null;
-        String name = "N/A";
-        if (post.from_id >= 0) {
+        PostAuthorInformation author = getAuthorInformation(post.from_id);
+        postAuthorPhoto.setDownloadableImageUri(author.imageUriStr);
+        postAuthorName.setText(author.name);
+    }
+
+    private static PostAuthorInformation getAuthorInformation(int from_id) {
+        if (from_id >= 0) {
             CachedUser user = null;
             try {
-                user = DbHelper.get().getCachedUserDao().queryForId(post.from_id);
+                user = DbHelper.get().getCachedUserDao().queryForId(from_id);
             } catch (SQLException e) {
                 Log.e(TAG, "Unable to load user from db", e);
             }
             if (user != null) {
-                imageUriStr = user.photo_100;
-                name = user.first_name + " " + user.last_name;
+                return new PostAuthorInformation(user.first_name + " " + user.last_name, user.photo_100);
             }
         } else {
             CachedGroup group = null;
             try {
-                group = DbHelper.get().getCachedGroupDao().queryForId(-post.from_id);
+                group = DbHelper.get().getCachedGroupDao().queryForId(-from_id);
             } catch (SQLException e) {
                 Log.e(TAG, "Unable to load group from db", e);
             }
             if (group != null) {
-                imageUriStr = group.photo_100;
-                name = group.name;
+                return new PostAuthorInformation(group.name == null ? "N/A" : group.name, group.photo_100);
             }
         }
-        postAuthorPhoto.setDownloadableImageUri(imageUriStr);
-        postAuthorName.setText(name);
+        return new PostAuthorInformation("N/A", null);
     }
 
     private static String formatPostDate(long dateMillis) {
