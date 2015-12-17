@@ -101,6 +101,9 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
                                 imageView.post(new Runnable() {
                                     @Override
                                     public void run() {
+                                        if (imageView.getTag() != imageUriFinal) {
+                                            return;
+                                        }
                                         if (d == null) {
                                             Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
                                             return;
