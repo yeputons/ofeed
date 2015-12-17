@@ -20,9 +20,9 @@ public class CachedFeedItem {
     @NonNull
     public String nextPageToLoad;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
+    @DatabaseField(canBeNull = false, persisterClass = VKApiFeedItemPersister.class)
     @NonNull
-    public byte[] serializedFeedItem;
+    public VKApiFeedItem feedItem;
 
     public CachedFeedItem() {
     }
@@ -34,10 +34,6 @@ public class CachedFeedItem {
             throw new UnsupportedOperationException();
         }
         date = item.date;
-        Parcel p = Parcel.obtain();
-        item.writeToParcel(p, 0);
-        p.setDataPosition(0);
-        serializedFeedItem = p.marshall();
-        p.recycle();
+        feedItem = item;
     }
 }

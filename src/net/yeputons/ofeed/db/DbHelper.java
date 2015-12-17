@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = WebResourcesCache.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private static volatile DbHelper dbHelper;
 
     private volatile Dao<CachedWebResource, String> cachedWebResourcesDao;
@@ -48,7 +48,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
         if (oldVer < 2) {
             throw new UnsupportedOperationException();
         }
-        if (oldVer >= 2 && oldVer <= 4) {
+        if (oldVer >= 2 && oldVer <= 5) {
             try {
                 if (oldVer > 2) {
                     TableUtils.dropTable(connectionSource, CachedFeedItem.class, true);

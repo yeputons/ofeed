@@ -160,13 +160,8 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             iterator = itemDao.queryBuilder().orderBy("date", false).iterator();
             while (iterator.hasNext()) {
                 CachedFeedItem cached = iterator.next();
-                Parcel p = Parcel.obtain();
-                p.unmarshall(cached.serializedFeedItem, 0, cached.serializedFeedItem.length);
-                p.setDataPosition(0);
-                VKApiFeedItem feedItem = new VKApiFeedItem(p);
-                p.recycle();
-                if (feedItem.type.equals(VKApiFeedItem.TYPE_POST)) {
-                    posts.add(feedItem.post);
+                if (cached.feedItem.type.equals(VKApiFeedItem.TYPE_POST)) {
+                    posts.add(cached.feedItem.post);
                 }
             }
         } catch (SQLException e) {
