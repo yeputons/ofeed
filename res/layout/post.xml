@@ -8,7 +8,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <ImageView
+        <net.yeputons.ofeed.DownloadableImageView
                 android:layout_width="20pt"
                 android:layout_height="20pt"
                 android:id="@+id/postAuthorPhoto" android:layout_marginRight="4dp"/>
