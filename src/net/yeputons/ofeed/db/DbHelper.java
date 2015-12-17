@@ -16,10 +16,11 @@ import java.sql.SQLException;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = WebResourcesCache.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
     private static volatile DbHelper dbHelper;
 
     private volatile Dao<CachedWebResource, String> cachedWebResourcesDao;
+    private volatile Dao<CachedFeedItem, String> cachedFeedItemDao;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,17 +48,16 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
         if (oldVer < 2) {
             throw new UnsupportedOperationException();
         }
-        if (oldVer == 2) {
+        if (oldVer >= 2 && oldVer <= 4) {
             try {
+                if (oldVer > 2) {
+                    TableUtils.dropTable(connectionSource, CachedFeedItem.class, true);
+                }
                 TableUtils.createTable(connectionSource, CachedFeedItem.class);
             } catch (SQLException e) {
                 Log.e(TAG, "Error while creating CachedFeedItem table");
                 throw new RuntimeException(e);
             }
-            oldVer++;
-        }
-        if (oldVer != newVer) {
-            throw new AssertionError("Internal error during db migration");
         }
     }
 
@@ -76,6 +76,23 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return cachedWebResourcesDao;
+    }
+
+    @NonNull
+    public Dao<CachedFeedItem, String> getCachedFeedItemDao() {
+        if (cachedFeedItemDao == null) {
+            synchronized (this) {
+                if (cachedFeedItemDao == null) {
+                    try {
+                        cachedFeedItemDao = DaoManager.createDao(getConnectionSource(), CachedFeedItem.class);
+                    } catch (SQLException e) {
+                        Log.e(TAG, "Cannot create DAO", e);
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return cachedFeedItemDao;
     }
 
     @NonNull
