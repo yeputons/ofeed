@@ -2,6 +2,7 @@ package net.yeputons.ofeed.db;
 
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,6 +11,8 @@ import com.vk.sdk.api.model.VKApiFeedItem;
 @DatabaseTable(tableName = "feed_items")
 public class CachedFeedItem {
     public static final String NEXT_PAGE_TO_LOAD = "nextPageToLoad";
+
+    public static final String TYPE_PAGE_END = "pageEnd";
 
     @DatabaseField(id = true, canBeNull = false)
     @NonNull
@@ -22,8 +25,8 @@ public class CachedFeedItem {
     @NonNull
     public String nextPageToLoad;
 
-    @DatabaseField(canBeNull = false, persisterClass = VKApiFeedItemPersister.class)
-    @NonNull
+    @DatabaseField(canBeNull = true, persisterClass = VKApiFeedItemPersister.class)
+    @Nullable
     public VKApiFeedItem feedItem;
 
     public CachedFeedItem() {
@@ -37,5 +40,19 @@ public class CachedFeedItem {
         }
         date = item.date;
         feedItem = item;
+    }
+
+    public CachedFeedItem(VKApiFeedItem item, String nextPageToLoad) {
+        id = getPageEndId(nextPageToLoad);
+        date = item.date;
+        this.nextPageToLoad = nextPageToLoad;
+    }
+
+    public static String getPageEndId(String nextPageToLoad) {
+        return TYPE_PAGE_END + "_" + nextPageToLoad;
+    }
+
+    public boolean isPageEnd() {
+        return id.startsWith(TYPE_PAGE_END + "_");
     }
 }

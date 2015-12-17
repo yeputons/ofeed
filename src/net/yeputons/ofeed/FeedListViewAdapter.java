@@ -32,26 +32,20 @@ public class FeedListViewAdapter extends ArrayAdapter<CachedFeedItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View postView = convertView;
 
-        CachedFeedItem feedItem = values.get(position);
-        if (feedItem == null) {
+        final CachedFeedItem feedItem = values.get(position);
+        if (feedItem.isPageEnd()) {
             // Load more
             if (postView == null || postView.findViewById(R.id.buttonLoadMore) == null) {
                 postView = View.inflate(getContext(), R.layout.load_more, null);
             }
 
             Button buttonLoadMore = (Button) postView.findViewById(R.id.buttonLoadMore);
-            final CachedFeedItem previous = values.get(position - 1);
-            if (previous == null || previous.nextPageToLoad.isEmpty()) {
-                Log.e(TAG, "Unexpected 'load more' placeholder");
-                buttonLoadMore.setTag(null);
-                return postView;
-            }
-            buttonLoadMore.setTag(previous.nextPageToLoad);
+            buttonLoadMore.setTag(feedItem.nextPageToLoad);
             buttonLoadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (view.getTag() == previous.nextPageToLoad) {
-                        mainActivity.loadFrom(previous.nextPageToLoad);
+                    if (view.getTag() == feedItem.nextPageToLoad) {
+                        mainActivity.loadFrom(feedItem.nextPageToLoad);
                     }
                 }
             });

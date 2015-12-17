@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
@@ -85,6 +86,8 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                     update.where().eq(CachedFeedItem.NEXT_PAGE_TO_LOAD, startFrom);
                     update.updateColumnValue(CachedFeedItem.NEXT_PAGE_TO_LOAD, "");
                     update.update();
+
+                    DbHelper.get().getCachedFeedItemDao().deleteById(CachedFeedItem.getPageEndId(startFrom));
                 } catch (SQLException e) {
                     Log.e(TAG, "Unable to remove 'next page' marker from some feed items", e);
                 }
@@ -190,6 +193,9 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                                 item.nextPageToLoad = "";
                             }
                             itemDao.createOrUpdate(item);
+                            if (!item.nextPageToLoad.isEmpty()) {
+                                itemDao.createOrUpdate(new CachedFeedItem(feed.get(i), item.nextPageToLoad));
+                            }
                         }
                         return null;
                     }
@@ -226,9 +232,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         try {
             for (CachedFeedItem item : itemDao.query(itemDao.queryBuilder().orderBy("date", false).prepare())) {
                 posts.add(item);
-                if (!item.nextPageToLoad.isEmpty()) {
-                    posts.add(null);
-                }
             }
         } catch (SQLException e) {
             Log.e(TAG, "Unable to load feed from DB", e);
