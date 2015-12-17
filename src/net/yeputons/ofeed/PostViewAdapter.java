@@ -3,6 +3,7 @@ package net.yeputons.ofeed;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,16 +13,21 @@ import android.widget.Toast;
 import com.vk.sdk.api.model.VKApiCommunity;
 import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKApiUser;
+import net.yeputons.ofeed.db.CachedGroup;
+import net.yeputons.ofeed.db.CachedUser;
+import net.yeputons.ofeed.db.DbHelper;
 import net.yeputons.ofeed.db.WebResourcesCache;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.WebResource;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
+    private static final String TAG = PostViewAdapter.class.getName();
     private final ArrayList<VKApiPost> values;
 
     public PostViewAdapter(Context context, ArrayList<VKApiPost> values) {
@@ -41,15 +47,29 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
         ((TextView) postView.findViewById(R.id.postText)).setText(post.text);
         ((TextView) postView.findViewById(R.id.postDate)).setText(new Date(post.date * 1000).toString());
 
-        String imageUri, name;
+        String imageUri = null, name = "N/A";
         if (post.from_id >= 0) {
-            VKApiUser user = MainActivity.users.get(post.from_id);
-            imageUri = user.photo_100;
-            name = user.first_name + " " + user.last_name;
+            CachedUser user = null;
+            try {
+                user = DbHelper.get().getCachedUserDao().queryForId(post.from_id);
+            } catch (SQLException e) {
+                Log.e(TAG, "Unable to load user from db", e);
+            }
+            if (user != null) {
+                imageUri = user.photo_100;
+                name = user.first_name + " " + user.last_name;
+            }
         } else {
-            VKApiCommunity group = MainActivity.groups.get(-post.from_id);
-            imageUri = group.photo_100;
-            name = group.name;
+            CachedGroup group = null;
+            try {
+                group = DbHelper.get().getCachedGroupDao().queryForId(-post.from_id);
+            } catch (SQLException e) {
+                Log.e(TAG, "Unable to load group from db", e);
+            }
+            if (group != null) {
+                imageUri = group.photo_100;
+                name = group.name;
+            }
         }
         if (imageUri != null) {
             final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);

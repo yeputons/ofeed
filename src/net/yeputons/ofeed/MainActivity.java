@@ -20,6 +20,8 @@ import com.vk.sdk.api.*;
 import com.vk.sdk.api.methods.VKApiFeed;
 import com.vk.sdk.api.model.*;
 import net.yeputons.ofeed.db.CachedFeedItem;
+import net.yeputons.ofeed.db.CachedGroup;
+import net.yeputons.ofeed.db.CachedUser;
 import net.yeputons.ofeed.db.DbHelper;
 
 import java.sql.SQLException;
@@ -32,9 +34,6 @@ import java.util.concurrent.Callable;
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
     private static final String TAG = "ofeed";
     private Menu optionsMenu;
-
-    static final Map<Integer, VKApiUser> users = new HashMap<>();
-    static final Map<Integer, VKApiCommunity> groups = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +70,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
 
     public void logout(MenuItem item) {
         VKSdk.logout();
-        users.clear();
-        groups.clear();
         updateFeed();
         ((TextView) findViewById(R.id.textCurrentUser)).setText("Not logged in");
         updateMenuStatus();
@@ -95,12 +92,8 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             @Override
             public void onComplete(VKResponse response) {
                 final VKApiFeedPage page = (VKApiFeedPage) response.parsedModel;
-                for (VKApiCommunity c : page.groups) {
-                    groups.put(c.getId(), c);
-                }
-                for (VKApiUser u : page.profiles) {
-                    users.put(u.getId(), u);
-                }
+                final Dao<CachedUser, Integer> userDao = DbHelper.get().getCachedUserDao();
+                final Dao<CachedGroup, Integer> groupDao = DbHelper.get().getCachedGroupDao();
                 final ArrayList<VKApiFeedItem> feed = new ArrayList<VKApiFeedItem>();
                 for (VKApiFeedItem item : page.items) {
                     if (item.type.equals(VKApiFeedItem.TYPE_POST)) {
@@ -109,6 +102,24 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 }
                 final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
                 try {
+                    userDao.callBatchTasks(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            for (VKApiUser u : page.profiles) {
+                                userDao.createOrUpdate(new CachedUser(u));
+                            }
+                            return null;
+                        }
+                    });
+                    groupDao.callBatchTasks(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            for (VKApiCommunity g : page.groups) {
+                                groupDao.createOrUpdate(new CachedGroup(g));
+                            }
+                            return null;
+                        }
+                    });
                     itemDao.callBatchTasks(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
