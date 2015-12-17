@@ -22,6 +22,9 @@ import net.yeputons.ofeed.web.WebResource;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class PostView extends LinearLayout {
@@ -44,7 +47,7 @@ public class PostView extends LinearLayout {
 
     public void setPost(@NonNull VKApiPost post) {
         postText.setText(post.text);
-        postDate.setText(new Date(post.date * 1000).toString());
+        postDate.setText(formatPostDate(post.date));
 
         String imageUriStr = null;
         String name = "N/A";
@@ -79,6 +82,20 @@ public class PostView extends LinearLayout {
 
         startImageDownload();
         postAuthorName.setText(name);
+    }
+
+    private static String formatPostDate(long dateMillis) {
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(dateMillis * 1000);
+
+        Calendar curDay = Calendar.getInstance();
+        curDay.set(Calendar.HOUR, 0);
+        curDay.set(Calendar.MINUTE, 0);
+        curDay.set(Calendar.SECOND, 0);
+
+        DateFormat dateFormat = date.after(curDay) ? DateFormat.getTimeInstance() : DateFormat.getDateTimeInstance();
+        dateFormat.setCalendar(date);
+        return dateFormat.format(date.getTime());
     }
 
     private void startImageDownload() {
