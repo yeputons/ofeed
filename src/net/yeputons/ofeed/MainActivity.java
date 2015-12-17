@@ -160,14 +160,21 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             final VKApiFeedPage page = (VKApiFeedPage) response.parsedModel;
             final Dao<CachedUser, Integer> userDao = DbHelper.get().getCachedUserDao();
             final Dao<CachedGroup, Integer> groupDao = DbHelper.get().getCachedGroupDao();
-            final ArrayList<VKApiFeedItem> feed = new ArrayList<VKApiFeedItem>();
+            final ArrayList<CachedFeedItem> feed = new ArrayList<CachedFeedItem>();
             if (page.items.length == 0) {
                 return;
             }
 
+            Set<String> occuredItems = new HashSet<>();
             for (VKApiFeedItem item : page.items) {
                 if (item.type.equals(VKApiFeedItem.TYPE_POST)) {
-                    feed.add(item);
+                    CachedFeedItem item2 = new CachedFeedItem(item);
+                    if (occuredItems.contains(item2.id)) {
+                        Log.w(TAG, "Received duplicated item in response from VK: " + item2.id);
+                        continue;
+                    }
+                    occuredItems.add(item2.id);
+                    feed.add(item2);
                 }
             }
             final CachedFeedItem pageEndPlaceholder = new CachedFeedItem(page.items[page.items.length - 1], page.next_from);
@@ -196,7 +203,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                     public Void call() throws Exception {
                         boolean pageDoesNotContinue = true;
                         for (int i = 0; i < feed.size(); i++) {
-                            CachedFeedItem item = new CachedFeedItem(feed.get(i));
+                            CachedFeedItem item = feed.get(i);
                             if (i + 1 == feed.size()) {
                                 List<CachedFeedItem> old =
                                         itemDao.query(
