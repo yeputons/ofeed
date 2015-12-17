@@ -35,6 +35,12 @@ public class PostView extends LinearLayout {
     private final TextView postDate;
     private final DownloadableImageView postAuthorPhoto;
 
+    private final View postCopy;
+    private final TextView postCopyAuthorName;
+    private final TextView postCopyText;
+    private final TextView postCopyDate;
+    private final DownloadableImageView postCopyAuthorPhoto;
+
     public PostView(Context context) {
         super(context);
         inflate(context, R.layout.post, this);
@@ -42,6 +48,12 @@ public class PostView extends LinearLayout {
         postText = (TextView) findViewById(R.id.postText);
         postDate = (TextView) findViewById(R.id.postDate);
         postAuthorPhoto = (DownloadableImageView) findViewById(R.id.postAuthorPhoto);
+
+        postCopy = findViewById(R.id.postCopy);
+        postCopyAuthorName = (TextView) findViewById(R.id.postCopyAuthorName);
+        postCopyText = (TextView) findViewById(R.id.postCopyText);
+        postCopyDate = (TextView) findViewById(R.id.postCopyDate);
+        postCopyAuthorPhoto = (DownloadableImageView) findViewById(R.id.postCopyAuthorPhoto);
     }
 
     private static class PostAuthorInformation {
@@ -61,6 +73,19 @@ public class PostView extends LinearLayout {
         PostAuthorInformation author = getAuthorInformation(post.from_id);
         postAuthorPhoto.setDownloadableImageUri(author.imageUriStr);
         postAuthorName.setText(author.name);
+
+        if (post.copy_history == null || post.copy_history.size() == 0) {
+            postCopy.setVisibility(GONE);
+        } else {
+            postCopy.setVisibility(VISIBLE);
+
+            VKApiPost copyPost = post.copy_history.get(0);
+            postCopyText.setText(copyPost.text);
+            postCopyDate.setText(formatPostDate(copyPost.date));
+            PostAuthorInformation copyAuthor = getAuthorInformation(copyPost.from_id);
+            postCopyAuthorPhoto.setDownloadableImageUri(copyAuthor.imageUriStr);
+            postCopyAuthorName.setText(copyAuthor.name);
+        }
     }
 
     private static PostAuthorInformation getAuthorInformation(int from_id) {

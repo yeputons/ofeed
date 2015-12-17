@@ -38,4 +38,28 @@
             android:text="Post text"
             android:id="@+id/postText" android:phoneNumber="false" android:singleLine="false"
             android:textColor="@color/vk_black" android:maxLines="5" android:ellipsize="end"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:id="@+id/postCopy" android:layout_marginLeft="6pt">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+            <net.yeputons.ofeed.DownloadableImageView android:layout_width="15pt" android:layout_height="15pt" android:id="@+id/postCopyAuthorPhoto"
+                                                      android:layout_marginRight="4dp"/>
+            <LinearLayout android:orientation="vertical" android:layout_width="fill_parent"
+                          android:layout_height="fill_parent">
+                <TextView android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="Author name"
+                          android:id="@+id/postCopyAuthorName" android:singleLine="true" android:textColor="@color/vk_black"
+                          android:gravity="left|center_vertical" android:layout_column="0" android:layout_row="0"
+                          android:layout_weight="1" android:textStyle="bold" android:textSize="12sp"/>
+                <TextView android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="Date"
+                          android:id="@+id/postCopyDate" android:gravity="left|center_vertical" android:textColor="#ff808080"
+                          android:layout_row="1" android:layout_column="0" android:layout_weight="1"
+                          android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Repost text"
+                  android:id="@+id/postCopyText" android:phoneNumber="false" android:singleLine="false"
+                  android:textColor="@color/vk_black" android:maxLines="5" android:ellipsize="end"/>
+    </LinearLayout>
 </LinearLayout>
