@@ -18,11 +18,14 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FeedListViewAdapter extends BaseAdapter {
     private static final String TAG = FeedListViewAdapter.class.getName();
     private final MainActivity mainActivity;
     private final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
+    private Set<String> pageLoadsInProgress = new HashSet<>();
 
     public FeedListViewAdapter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -60,7 +63,7 @@ public class FeedListViewAdapter extends BaseAdapter {
     @Override
     public long getItemId(int i) {
         try {
-            return getItemsQuery().offset((long)i).limit(1L).selectColumns("id").queryForFirst().id.hashCode();
+            return getItemsQuery().offset((long) i).limit(1L).selectColumns("id").queryForFirst().id.hashCode();
         } catch (SQLException e) {
             Log.e(TAG, "Unable to get item's id by position in feed from database", e);
             throw new RuntimeException(e);
@@ -78,12 +81,22 @@ public class FeedListViewAdapter extends BaseAdapter {
                 postView = View.inflate(mainActivity, R.layout.load_more, null);
             }
 
-            Button buttonLoadMore = (Button) postView.findViewById(R.id.buttonLoadMore);
+            final Button buttonLoadMore = (Button) postView.findViewById(R.id.buttonLoadMore);
             buttonLoadMore.setTag(feedItem.nextPageToLoad);
+            if (pageLoadsInProgress.contains(feedItem.nextPageToLoad)) {
+                buttonLoadMore.setText("Loading...");
+                buttonLoadMore.setEnabled(false);
+            } else {
+                buttonLoadMore.setText("Load feed here...");
+                buttonLoadMore.setEnabled(true);
+            }
             buttonLoadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (view.getTag() == feedItem.nextPageToLoad) {
+                        buttonLoadMore.setText("Loading...");
+                        buttonLoadMore.setEnabled(false);
+                        pageLoadsInProgress.add(feedItem.nextPageToLoad);
                         mainActivity.loadFrom(feedItem.nextPageToLoad);
                     }
                 }
@@ -178,5 +191,9 @@ public class FeedListViewAdapter extends BaseAdapter {
         }
         ((TextView) postView.findViewById(R.id.postAuthorName)).setText(name);
         return postView;
+    }
+
+    public void completePageLoad(String startFrom) {
+        pageLoadsInProgress.remove(startFrom);
     }
 }

@@ -95,12 +95,14 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 } catch (SQLException e) {
                     Log.e(TAG, "Unable to remove 'next page' marker from some feed items", e);
                 }
+                adapter.completePageLoad(startFrom);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
                 feedGetListener.attemptFailed(request, attemptNumber, totalAttempts);
+                adapter.completePageLoad(startFrom);
             }
 
             @Override
