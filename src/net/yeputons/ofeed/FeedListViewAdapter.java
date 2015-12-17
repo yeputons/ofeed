@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.j256.ormlite.dao.Dao;
 import com.vk.sdk.api.model.VKApiPost;
 import net.yeputons.ofeed.db.*;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
@@ -17,26 +18,59 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class FeedListViewAdapter extends ArrayAdapter<CachedFeedItem> {
+public class FeedListViewAdapter extends BaseAdapter {
     private static final String TAG = FeedListViewAdapter.class.getName();
-    private final ArrayList<CachedFeedItem> values;
     private final MainActivity mainActivity;
+    private final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
 
-    public FeedListViewAdapter(MainActivity mainActivity, ArrayList<CachedFeedItem> values) {
-        super(mainActivity, R.layout.post, values);
-        this.values = values;
+    public FeedListViewAdapter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
+    }
+
+    @Override
+    public int getCount() {
+        try {
+            long answer = itemDao.countOf();
+            if (answer > Integer.MAX_VALUE) {
+                Log.e(TAG, "Too many feed items found (integer overflow!)");
+                return Integer.MAX_VALUE;
+            }
+            return (int)answer;
+        } catch (SQLException e) {
+            Log.e(TAG, "Unable to get count of feed items", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CachedFeedItem getItem(int i) {
+        try {
+            return itemDao.queryBuilder().orderBy("date", false).offset((long) i).limit(1L).queryForFirst();
+        } catch (SQLException e) {
+            Log.e(TAG, "Unable to get item by position in feed from database", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public long getItemId(int i) {
+        try {
+            return itemDao.queryBuilder().orderBy("date", false).offset((long)i).limit(1L).selectColumns("id").queryForFirst().id.hashCode();
+        } catch (SQLException e) {
+            Log.e(TAG, "Unable to get item's id by position in feed from database", e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View postView = convertView;
 
-        final CachedFeedItem feedItem = values.get(position);
+        final CachedFeedItem feedItem = getItem(position);
         if (feedItem.isPageEnd()) {
             // Load more
             if (postView == null || postView.findViewById(R.id.buttonLoadMore) == null) {
-                postView = View.inflate(getContext(), R.layout.load_more, null);
+                postView = View.inflate(mainActivity, R.layout.load_more, null);
             }
 
             Button buttonLoadMore = (Button) postView.findViewById(R.id.buttonLoadMore);
@@ -51,12 +85,16 @@ public class FeedListViewAdapter extends ArrayAdapter<CachedFeedItem> {
             });
             return postView;
         }
+        if (feedItem.feedItem == null) {
+            Log.e(TAG, "Invalid feed item loaded: neither page end nor standard feed item");
+            return postView;
+        }
 
         // Post
         VKApiPost post = feedItem.feedItem.post;
 
         if (postView == null || postView.findViewById(R.id.postText) == null) {
-            postView = View.inflate(getContext(), R.layout.post, null);
+            postView = View.inflate(mainActivity, R.layout.post, null);
         }
 
         ((TextView) postView.findViewById(R.id.postText)).setText(post.text);
@@ -120,7 +158,7 @@ public class FeedListViewAdapter extends ArrayAdapter<CachedFeedItem> {
                                             return;
                                         }
                                         if (d == null) {
-                                            Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mainActivity, "Unable to load image", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                         imageView.setImageURI(resultingUri);

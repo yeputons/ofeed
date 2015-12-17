@@ -32,6 +32,7 @@ import java.util.concurrent.Callable;
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
     private static final String TAG = "ofeed";
     private Menu optionsMenu;
+    private FeedListViewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,11 +45,14 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         } else {
             onResult(VKAccessToken.currentToken());
         }
+        adapter = new FeedListViewAdapter(this);
+        ((ListView) findViewById(R.id.listFeed)).setAdapter(adapter);
     }
 
     @Override
     protected void onDestroy() {
         optionsMenu = null;
+        adapter = null;
         super.onDestroy();
     }
 
@@ -91,7 +95,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 } catch (SQLException e) {
                     Log.e(TAG, "Unable to remove 'next page' marker from some feed items", e);
                 }
-                updateFeed();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -122,7 +126,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             Log.e(TAG, "Unable to clear cache", e);
             Toast.makeText(this, "Error while clearing cache, it may become inconsistent", Toast.LENGTH_LONG).show();
         }
-        updateFeed();
+        adapter.notifyDataSetChanged();
     }
 
     public void logout(MenuItem item) {
@@ -203,7 +207,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             } catch (Exception e) {
                 Log.e(TAG, "Unable to update db with received feed items", e);
             }
-            updateFeed();
+            adapter.notifyDataSetChanged();
             Log.d(TAG, "next_from=" + page.next_from);
         }
 
@@ -223,23 +227,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         ((TextView) findViewById(R.id.textCurrentUser)).setText("UserId = " + res.userId);
         updateMenuStatus();
         loadBeginning(null);
-    }
-
-    private void updateFeed() {
-        Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
-
-        ArrayList<CachedFeedItem> posts = new ArrayList<>();
-        try {
-            for (CachedFeedItem item : itemDao.query(itemDao.queryBuilder().orderBy("date", false).prepare())) {
-                posts.add(item);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "Unable to load feed from DB", e);
-            return;
-        }
-
-        ListView list = (ListView) findViewById(R.id.listFeed);
-        list.setAdapter(new FeedListViewAdapter(this, posts));
     }
 
     @Override
