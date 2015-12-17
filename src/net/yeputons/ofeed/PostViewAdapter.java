@@ -71,8 +71,9 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
                 name = group.name;
             }
         }
+        final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);
+        imageView.setImageResource(R.drawable.default_avatar);
         if (imageUri != null) {
-            final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);
             final URI imageUriFinal = URI.create(imageUri);
             imageView.setTag(imageUriFinal);
             WebResource cached = WebResourcesCache.getCachedDownloadingWebResource(imageUriFinal);
@@ -82,8 +83,6 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
                 if (download != null) {
                     imageView.setImageURI(Uri.fromFile(download.getLocalFile()));
                     found = true;
-                } else {
-                    imageView.setImageURI(null);
                 }
             }
             if (!found) {
