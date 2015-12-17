@@ -12,7 +12,8 @@ import com.vk.sdk.api.model.VKApiFeedItem;
 public class CachedFeedItem {
     public static final String NEXT_PAGE_TO_LOAD = "nextPageToLoad";
 
-    public static final String TYPE_PAGE_END = "pageEnd";
+    // tilde is intended to make IDs of page ends bigger than everything else
+    public static final String TYPE_PAGE_END = "~pageEnd";
 
     @DatabaseField(id = true, canBeNull = false)
     @NonNull

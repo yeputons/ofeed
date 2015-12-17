@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.vk.sdk.api.model.VKApiPost;
 import net.yeputons.ofeed.db.*;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
@@ -27,6 +28,10 @@ public class FeedListViewAdapter extends BaseAdapter {
         this.mainActivity = mainActivity;
     }
 
+    private QueryBuilder<CachedFeedItem, String> getItemsQuery() {
+        return itemDao.queryBuilder().orderBy("date", false).orderBy("id", true);
+    }
+
     @Override
     public int getCount() {
         try {
@@ -45,7 +50,7 @@ public class FeedListViewAdapter extends BaseAdapter {
     @Override
     public CachedFeedItem getItem(int i) {
         try {
-            return itemDao.queryBuilder().orderBy("date", false).offset((long) i).limit(1L).queryForFirst();
+            return getItemsQuery().offset((long) i).limit(1L).queryForFirst();
         } catch (SQLException e) {
             Log.e(TAG, "Unable to get item by position in feed from database", e);
             throw new RuntimeException(e);
@@ -55,7 +60,7 @@ public class FeedListViewAdapter extends BaseAdapter {
     @Override
     public long getItemId(int i) {
         try {
-            return itemDao.queryBuilder().orderBy("date", false).offset((long)i).limit(1L).selectColumns("id").queryForFirst().id.hashCode();
+            return getItemsQuery().offset((long)i).limit(1L).selectColumns("id").queryForFirst().id.hashCode();
         } catch (SQLException e) {
             Log.e(TAG, "Unable to get item's id by position in feed from database", e);
             throw new RuntimeException(e);
