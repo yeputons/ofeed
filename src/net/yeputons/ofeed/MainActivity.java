@@ -46,6 +46,12 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     }
 
     @Override
+    protected void onDestroy() {
+        optionsMenu = null;
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, this)) {
             super.onActivityResult(requestCode, resultCode, data);
