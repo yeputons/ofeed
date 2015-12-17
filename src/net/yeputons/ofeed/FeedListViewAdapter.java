@@ -72,34 +72,29 @@ public class FeedListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View postView = convertView;
-
         final CachedFeedItem feedItem = getItem(position);
         if (feedItem.isPageEnd()) {
             // Load more
-            if (postView == null || !(postView instanceof LoadMoreView)) {
-                postView = new LoadMoreView(mainActivity, pageLoadsInProgress);
+            if (convertView == null || !(convertView instanceof LoadMoreView)) {
+                convertView = new LoadMoreView(mainActivity, pageLoadsInProgress);
             }
 
-            LoadMoreView loadMoreView = (LoadMoreView) postView;
+            LoadMoreView loadMoreView = (LoadMoreView) convertView;
             loadMoreView.setNextPageToLoad(feedItem.nextPageToLoad);
             loadMoreView.updateButtonState();
-            return postView;
+            return convertView;
         }
         if (feedItem.feedItem == null) {
             Log.e(TAG, "Invalid feed item loaded: neither page end nor standard feed item");
-            return postView;
+            return convertView;
         }
 
-        // Post
-        VKApiPost post = feedItem.feedItem.post;
-
-        if (postView == null || !(postView instanceof PostView)) {
-            postView = new PostView(mainActivity);
+        if (convertView == null || !(convertView instanceof PostView)) {
+            convertView = new PostView(mainActivity);
         }
 
-        ((PostView) postView).setPost(post);
-        return postView;
+        ((PostView) convertView).setPost(feedItem.feedItem.post);
+        return convertView;
     }
 
     public void completePageLoad(String startFrom) {

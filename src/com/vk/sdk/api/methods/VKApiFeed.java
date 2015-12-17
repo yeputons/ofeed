@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 public class VKApiFeed extends VKApiBase {
     public static final String START_FROM = "start_from";
+    public static final String FILTERS = "filters";
+
+    public static final String FILTERS_POST = "post";
 
     public VKRequest get() {
         return get(null);

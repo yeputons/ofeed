@@ -79,11 +79,11 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     }
 
     public void loadBeginning(MenuItem item) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2)).executeWithListener(feedGetListener);
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST)).executeWithListener(feedGetListener);
     }
 
     public void loadFrom(final String startFrom) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 feedGetListener.onComplete(response);
@@ -167,15 +167,13 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
 
             Set<String> occuredItems = new HashSet<>();
             for (VKApiFeedItem item : page.items) {
-                if (item.type.equals(VKApiFeedItem.TYPE_POST)) {
-                    CachedFeedItem item2 = new CachedFeedItem(item);
-                    if (occuredItems.contains(item2.id)) {
-                        Log.w(TAG, "Received duplicated item in response from VK: " + item2.id);
-                        continue;
-                    }
-                    occuredItems.add(item2.id);
-                    feed.add(item2);
+                CachedFeedItem item2 = new CachedFeedItem(item);
+                if (occuredItems.contains(item2.id)) {
+                    Log.w(TAG, "Received duplicated item in response from VK: " + item2.id);
+                    continue;
                 }
+                occuredItems.add(item2.id);
+                feed.add(item2);
             }
             final CachedFeedItem pageEndPlaceholder = new CachedFeedItem(page.items[page.items.length - 1], page.next_from);
             final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
