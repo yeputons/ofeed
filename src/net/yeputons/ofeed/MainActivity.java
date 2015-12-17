@@ -179,22 +179,17 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     private void updateFeed() {
         Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
 
-        CloseableIterator<CachedFeedItem> iterator = null;
-        ArrayList<VKApiPost> posts = new ArrayList<>();
+        ArrayList<CachedFeedItem> posts = new ArrayList<>();
         try {
-            iterator = itemDao.queryBuilder().orderBy("date", false).iterator();
-            while (iterator.hasNext()) {
-                CachedFeedItem cached = iterator.next();
-                if (cached.feedItem.type.equals(VKApiFeedItem.TYPE_POST)) {
-                    posts.add(cached.feedItem.post);
+            for (CachedFeedItem item : itemDao.query(itemDao.queryBuilder().orderBy("date", false).prepare())) {
+                posts.add(item);
+                if (!item.nextPageToLoad.isEmpty()) {
+                    posts.add(null);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (iterator != null) {
-                iterator.closeQuietly();
-            }
+            Log.e(TAG, "Unable to load feed from DB", e);
+            return;
         }
 
         ListView list = (ListView) findViewById(R.id.listFeed);

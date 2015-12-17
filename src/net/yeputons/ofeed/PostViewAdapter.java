@@ -13,10 +13,7 @@ import android.widget.Toast;
 import com.vk.sdk.api.model.VKApiCommunity;
 import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKApiUser;
-import net.yeputons.ofeed.db.CachedGroup;
-import net.yeputons.ofeed.db.CachedUser;
-import net.yeputons.ofeed.db.DbHelper;
-import net.yeputons.ofeed.db.WebResourcesCache;
+import net.yeputons.ofeed.db.*;
 import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.WebResource;
@@ -26,11 +23,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
+public class PostViewAdapter extends ArrayAdapter<CachedFeedItem> {
     private static final String TAG = PostViewAdapter.class.getName();
-    private final ArrayList<VKApiPost> values;
+    private final ArrayList<CachedFeedItem> values;
 
-    public PostViewAdapter(Context context, ArrayList<VKApiPost> values) {
+    public PostViewAdapter(Context context, ArrayList<CachedFeedItem> values) {
         super(context, R.layout.post, values);
         this.values = values;
     }
@@ -38,11 +35,22 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View postView = convertView;
+
+        CachedFeedItem feedItem = values.get(position);
+        if (feedItem == null) {
+            // Load more
+            if (postView == null || postView.findViewById(R.id.buttonLoadMore) == null) {
+                postView = View.inflate(getContext(), R.layout.load_more, null);
+            }
+            return postView;
+        }
+
+        // Post
+        VKApiPost post = feedItem.feedItem.post;
+
         if (postView == null || postView.findViewById(R.id.postText) == null) {
             postView = View.inflate(getContext(), R.layout.post, null);
         }
-
-        VKApiPost post = values.get(position);
 
         ((TextView) postView.findViewById(R.id.postText)).setText(post.text);
         ((TextView) postView.findViewById(R.id.postDate)).setText(new Date(post.date * 1000).toString());
