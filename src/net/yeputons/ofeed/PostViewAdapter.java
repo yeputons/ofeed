@@ -19,12 +19,13 @@ import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.WebResource;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
-    private final VKApiPost[] values;
+    private final ArrayList<VKApiPost> values;
 
-    public PostViewAdapter(Context context, VKApiPost[] values) {
+    public PostViewAdapter(Context context, ArrayList<VKApiPost> values) {
         super(context, R.layout.post, values);
         this.values = values;
     }
@@ -36,7 +37,7 @@ public class PostViewAdapter extends ArrayAdapter<VKApiPost> {
             postView = View.inflate(getContext(), R.layout.post, null);
         }
 
-        VKApiPost post = values[position];
+        VKApiPost post = values.get(position);
 
         ((TextView) postView.findViewById(R.id.postText)).setText(post.text);
         ((TextView) postView.findViewById(R.id.postDate)).setText(new Date(post.date * 1000).toString());
