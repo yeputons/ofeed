@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VKApiFeed extends VKApiBase {
+    public static final String START_FROM = "start_from";
+
     public VKRequest get() {
         return get(null);
     }

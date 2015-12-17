@@ -6,10 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.vk.sdk.api.model.VKApiCommunity;
 import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKApiUser;
@@ -26,10 +23,12 @@ import java.util.Date;
 public class PostViewAdapter extends ArrayAdapter<CachedFeedItem> {
     private static final String TAG = PostViewAdapter.class.getName();
     private final ArrayList<CachedFeedItem> values;
+    private final MainActivity mainActivity;
 
-    public PostViewAdapter(Context context, ArrayList<CachedFeedItem> values) {
-        super(context, R.layout.post, values);
+    public PostViewAdapter(MainActivity mainActivity, ArrayList<CachedFeedItem> values) {
+        super(mainActivity, R.layout.post, values);
         this.values = values;
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -42,6 +41,23 @@ public class PostViewAdapter extends ArrayAdapter<CachedFeedItem> {
             if (postView == null || postView.findViewById(R.id.buttonLoadMore) == null) {
                 postView = View.inflate(getContext(), R.layout.load_more, null);
             }
+
+            Button buttonLoadMore = (Button) postView.findViewById(R.id.buttonLoadMore);
+            final CachedFeedItem previous = values.get(position - 1);
+            if (previous == null || previous.nextPageToLoad.isEmpty()) {
+                Log.e(TAG, "Unexpected 'load more' placeholder");
+                buttonLoadMore.setTag(null);
+                return postView;
+            }
+            buttonLoadMore.setTag(previous.nextPageToLoad);
+            buttonLoadMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (view.getTag() == previous.nextPageToLoad) {
+                        mainActivity.loadFrom(previous.nextPageToLoad);
+                    }
+                }
+            });
             return postView;
         }
 

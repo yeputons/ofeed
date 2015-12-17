@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
@@ -68,6 +69,43 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         VKSdk.login(this, "friends", "wall");
     }
 
+    public void loadBeginning(MenuItem item) {
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2)).executeWithListener(feedGetListener);
+    }
+
+    public void loadFrom(final String startFrom) {
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                feedGetListener.onComplete(response);
+                UpdateBuilder<CachedFeedItem, String> update = DbHelper.get().getCachedFeedItemDao().updateBuilder();
+                try {
+                    update.where().eq(CachedFeedItem.NEXT_PAGE_TO_LOAD, startFrom);
+                    update.updateColumnValue(CachedFeedItem.NEXT_PAGE_TO_LOAD, "");
+                    update.update();
+                } catch (SQLException e) {
+                    Log.e(TAG, "Unable to remove 'next page' marker from some feed items", e);
+                }
+                updateFeed();
+            }
+
+            @Override
+            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
+                feedGetListener.attemptFailed(request, attemptNumber, totalAttempts);
+            }
+
+            @Override
+            public void onError(VKError error) {
+                feedGetListener.onError(error);
+            }
+
+            @Override
+            public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
+                feedGetListener.onProgress(progressType, bytesLoaded, bytesTotal);
+            }
+        });
+    }
+
     public void clearCache(MenuItem item) {
         DbHelper h = DbHelper.get();
         try {
@@ -95,6 +133,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         }
         boolean isLoggedIn = VKAccessToken.currentToken() != null;
         optionsMenu.findItem(R.id.menuItemLogin).setEnabled(!isLoggedIn);
+        optionsMenu.findItem(R.id.menuItemLoadBeginning).setEnabled(isLoggedIn);
         optionsMenu.findItem(R.id.menuItemLogout).setEnabled(isLoggedIn);
     }
 
@@ -175,7 +214,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     public void onResult(final VKAccessToken res) {
         ((TextView) findViewById(R.id.textCurrentUser)).setText("UserId = " + res.userId);
         updateMenuStatus();
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 100)).executeWithListener(feedGetListener);
+        loadBeginning(null);
     }
 
     private void updateFeed() {

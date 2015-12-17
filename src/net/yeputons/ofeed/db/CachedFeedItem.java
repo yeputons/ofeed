@@ -9,6 +9,8 @@ import com.vk.sdk.api.model.VKApiFeedItem;
 
 @DatabaseTable(tableName = "feed_items")
 public class CachedFeedItem {
+    public static final String NEXT_PAGE_TO_LOAD = "nextPageToLoad";
+
     @DatabaseField(id = true, canBeNull = false)
     @NonNull
     public String id;
