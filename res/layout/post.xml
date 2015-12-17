@@ -71,5 +71,8 @@
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Repost text"
                   android:id="@+id/postCopyText" android:phoneNumber="false" android:singleLine="false"
                   android:textColor="@color/vk_black" android:maxLines="5" android:ellipsize="end"/>
+        <net.yeputons.ofeed.PhotoAttachmentsView android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/postCopyPhotoAttachments"/>
     </LinearLayout>
+    <net.yeputons.ofeed.PhotoAttachmentsView android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/postPhotoAttachments"
+                                             android:layout_marginTop="2pt"/>
 </LinearLayout>
