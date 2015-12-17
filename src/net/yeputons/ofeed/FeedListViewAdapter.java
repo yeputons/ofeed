@@ -111,85 +111,11 @@ public class FeedListViewAdapter extends BaseAdapter {
         // Post
         VKApiPost post = feedItem.feedItem.post;
 
-        if (postView == null || postView.findViewById(R.id.postText) == null) {
-            postView = View.inflate(mainActivity, R.layout.post, null);
+        if (postView == null || !(postView instanceof PostView)) {
+            postView = new PostView(mainActivity);
         }
 
-        ((TextView) postView.findViewById(R.id.postText)).setText(post.text);
-        ((TextView) postView.findViewById(R.id.postDate)).setText(new Date(post.date * 1000).toString());
-
-        String imageUri = null, name = "N/A";
-        if (post.from_id >= 0) {
-            CachedUser user = null;
-            try {
-                user = DbHelper.get().getCachedUserDao().queryForId(post.from_id);
-            } catch (SQLException e) {
-                Log.e(TAG, "Unable to load user from db", e);
-            }
-            if (user != null) {
-                imageUri = user.photo_100;
-                name = user.first_name + " " + user.last_name;
-            }
-        } else {
-            CachedGroup group = null;
-            try {
-                group = DbHelper.get().getCachedGroupDao().queryForId(-post.from_id);
-            } catch (SQLException e) {
-                Log.e(TAG, "Unable to load group from db", e);
-            }
-            if (group != null) {
-                imageUri = group.photo_100;
-                name = group.name;
-            }
-        }
-        final ImageView imageView = (ImageView) postView.findViewById(R.id.postAuthorPhoto);
-        imageView.setImageResource(R.drawable.default_avatar);
-        if (imageUri != null) {
-            final URI imageUriFinal = URI.create(imageUri);
-            imageView.setTag(imageUriFinal);
-            WebResource cached = WebResourcesCache.getCachedDownloadingWebResource(imageUriFinal);
-            boolean found = false;
-            if (cached != null) {
-                ResourceDownload download = cached.getDownloaded();
-                if (download != null) {
-                    imageView.setImageURI(Uri.fromFile(download.getLocalFile()));
-                    found = true;
-                }
-            }
-            if (!found) {
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        final WebResource resource = WebResourcesCache.getDownloadingWebResource(imageUriFinal);
-                        resource.addOrRunDownloadCompleteListener(new DownloadCompleteListener() {
-                            @Override
-                            public void onDownloadComplete() {
-                                if (imageView.getTag() != imageUriFinal) {
-                                    return;
-                                }
-                                final ResourceDownload d = resource.getDownloaded();
-                                final Uri resultingUri = d != null ? Uri.fromFile(d.getLocalFile()) : null;
-                                imageView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (imageView.getTag() != imageUriFinal) {
-                                            return;
-                                        }
-                                        if (d == null) {
-                                            Toast.makeText(mainActivity, "Unable to load image", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                        imageView.setImageURI(resultingUri);
-                                    }
-                                });
-                            }
-                        });
-                        return null;
-                    }
-                }.execute();
-            }
-        }
-        ((TextView) postView.findViewById(R.id.postAuthorName)).setText(name);
+        ((PostView) postView).setPost(post);
         return postView;
     }
 
