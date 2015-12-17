@@ -1,7 +1,6 @@
 package net.yeputons.ofeed;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.View;

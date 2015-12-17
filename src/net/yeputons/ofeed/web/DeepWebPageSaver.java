@@ -1,8 +1,8 @@
 package net.yeputons.ofeed.web;
 
-import android.util.Log;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

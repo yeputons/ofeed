@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class WebResource {
     @NonNull final public URI uri;

@@ -1,7 +1,5 @@
 package net.yeputons.ofeed.db;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -11,12 +9,10 @@ import net.yeputons.ofeed.web.DownloadCompleteListener;
 import net.yeputons.ofeed.web.ResourceDownload;
 import net.yeputons.ofeed.web.ResourceDownloader;
 import net.yeputons.ofeed.web.WebResource;
-import net.yeputons.ofeed.web.dmanager.DownloadManagerResourceDownloader;
 
 import java.io.File;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.WeakHashMap;
 
 public class WebResourcesCache {

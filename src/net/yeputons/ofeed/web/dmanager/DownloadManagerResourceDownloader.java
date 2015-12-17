@@ -3,10 +3,13 @@ package net.yeputons.ofeed.web.dmanager;
 import android.app.DownloadManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import net.yeputons.ofeed.web.*;
-import android.support.annotation.NonNull;
+import net.yeputons.ofeed.web.DownloadCompleteListener;
+import net.yeputons.ofeed.web.ResourceDownload;
+import net.yeputons.ofeed.web.ResourceToFileDownloader;
+import net.yeputons.ofeed.web.WebResource;
 
 import java.io.File;
 import java.net.URI;
