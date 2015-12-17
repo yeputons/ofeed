@@ -31,7 +31,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, CachedWebResource.class);
             TableUtils.createTable(connectionSource, CachedFeedItem.class);
         } catch (SQLException e) {
-            Log.e(TAG, "Erro while creating DB", e);
+            Log.e(TAG, "Error while creating DB", e);
             throw new RuntimeException(e);
         }
     }
