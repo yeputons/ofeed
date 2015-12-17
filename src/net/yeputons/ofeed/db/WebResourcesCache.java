@@ -32,19 +32,14 @@ public class WebResourcesCache {
         result = new WebResource(uri);
         File foundFile = null;
         try {
-            Dao<CachedWebResource, Integer> dao = DbHelper.get().getCachedWebResourcesDao();
-            List<CachedWebResource> foundList = dao.queryForEq(CachedWebResource.URI_FIELD, uri.toString());
-            if (foundList.size() > 1) {
-                Log.e(TAG, "Found more than one WebResource for an URI: " + uri);
-            }
-            for (CachedWebResource attempt : foundList) {
-                foundFile = new File(attempt.localFile);
-                if (foundFile.canRead()) {
-                    break;
-                } else {
+            Dao<CachedWebResource, String> dao = DbHelper.get().getCachedWebResourcesDao();
+            CachedWebResource found = dao.queryForId(uri.toString());
+            if (found != null) {
+                foundFile = new File(found.localFile);
+                if (!foundFile.canRead()) {
                     Log.w(TAG, "File disappeared from cache: " + foundFile.toString() + " for " + uri.toString());
                     foundFile = null;
-                    dao.delete(attempt);
+                    dao.delete(found);
                 }
             }
         } catch (SQLException e) {
@@ -86,7 +81,7 @@ public class WebResourcesCache {
             d.addDownloadCompleteListener(new DownloadCompleteListener() {
                 @Override
                 public void onDownloadComplete() {
-                    Dao<CachedWebResource, Integer> dao = DbHelper.get().getCachedWebResourcesDao();
+                    Dao<CachedWebResource, String> dao = DbHelper.get().getCachedWebResourcesDao();
                     CachedWebResource r = new CachedWebResource();
                     r.uri = resource.uri.toString();
                     r.localFile = d.getLocalFile().getAbsolutePath();

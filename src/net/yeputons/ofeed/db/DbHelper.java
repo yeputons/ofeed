@@ -16,10 +16,10 @@ import java.sql.SQLException;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = WebResourcesCache.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static volatile DbHelper dbHelper;
 
-    private volatile Dao<CachedWebResource, Integer> cachedWebResourcesDao;
+    private volatile Dao<CachedWebResource, String> cachedWebResourcesDao;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -41,7 +41,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
     }
 
     @NonNull
-    public Dao<CachedWebResource, Integer> getCachedWebResourcesDao() {
+    public Dao<CachedWebResource, String> getCachedWebResourcesDao() {
         if (cachedWebResourcesDao == null) {
             synchronized (this) {
                 if (cachedWebResourcesDao == null) {

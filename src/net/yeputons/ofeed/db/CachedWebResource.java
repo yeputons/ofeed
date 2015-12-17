@@ -6,12 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "web_resources")
 public class CachedWebResource {
-    public static final String URI_FIELD = "uri";
-
-    @DatabaseField(generatedId = true)
-    public int id;
-
-    @DatabaseField(canBeNull = false, index = true)
+    @DatabaseField(canBeNull = false, id = true)
     @NonNull
     public String uri;
 
