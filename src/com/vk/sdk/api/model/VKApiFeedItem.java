@@ -29,6 +29,7 @@ public class VKApiFeedItem extends VKApiModel {
         can_edit = source.readByte() != 0;
         can_delete = source.readByte() != 0;
         post = source.readParcelable(getClass().getClassLoader());
+        post.copy_history = source.readParcelable(getClass().getClassLoader());
     }
 
     public VKApiFeedItem(JSONObject from) throws JSONException {
@@ -70,6 +71,7 @@ public class VKApiFeedItem extends VKApiModel {
         dest.writeByte(can_edit ? (byte)1 : (byte)0);
         dest.writeByte(can_delete ? (byte)1 : (byte)0);
         dest.writeParcelable(post, flags);
+        dest.writeParcelable(post.copy_history, flags);
     }
 
     public static Creator<VKApiFeedItem> CREATOR = new Creator<VKApiFeedItem>() {
