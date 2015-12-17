@@ -98,82 +98,84 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         optionsMenu.findItem(R.id.menuItemLogout).setEnabled(isLoggedIn);
     }
 
+    private final VKRequest.VKRequestListener feedGetListener = new VKRequest.VKRequestListener() {
+        @Override
+        public void onComplete(VKResponse response) {
+            final VKApiFeedPage page = (VKApiFeedPage) response.parsedModel;
+            final Dao<CachedUser, Integer> userDao = DbHelper.get().getCachedUserDao();
+            final Dao<CachedGroup, Integer> groupDao = DbHelper.get().getCachedGroupDao();
+            final ArrayList<VKApiFeedItem> feed = new ArrayList<VKApiFeedItem>();
+            for (VKApiFeedItem item : page.items) {
+                if (item.type.equals(VKApiFeedItem.TYPE_POST)) {
+                    feed.add(item);
+                }
+            }
+            final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
+            try {
+                userDao.callBatchTasks(new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        for (VKApiUser u : page.profiles) {
+                            userDao.createOrUpdate(new CachedUser(u));
+                        }
+                        return null;
+                    }
+                });
+                groupDao.callBatchTasks(new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        for (VKApiCommunity g : page.groups) {
+                            groupDao.createOrUpdate(new CachedGroup(g));
+                        }
+                        return null;
+                    }
+                });
+                itemDao.callBatchTasks(new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        for (int i = 0; i < feed.size(); i++) {
+                            CachedFeedItem item = new CachedFeedItem(feed.get(i));
+                            if (i + 1 == feed.size()) {
+                                item.nextPageToLoad = page.next_from;
+                            } else {
+                                item.nextPageToLoad = "";
+                            }
+                            List<CachedFeedItem> old =
+                                    itemDao.query(
+                                            itemDao.queryBuilder()
+                                                    .selectColumns("nextPageToLoad")
+                                                    .where().eq("id", item.id).prepare());
+                            if (!old.isEmpty() && old.get(0).nextPageToLoad.isEmpty()) {
+                                item.nextPageToLoad = "";
+                            }
+                            itemDao.createOrUpdate(item);
+                        }
+                        return null;
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to update db with received feed items", e);
+            }
+            updateFeed();
+            Log.d(TAG, "next_from=" + page.next_from);
+        }
+
+        @Override
+        public void onError(VKError error) {
+            Toast.makeText(MainActivity.this, "Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
+            Toast.makeText(MainActivity.this, String.format("Progress %d/%d", bytesLoaded, bytesTotal), Toast.LENGTH_SHORT).show();
+        }
+    };
+
     @Override
     public void onResult(final VKAccessToken res) {
         ((TextView) findViewById(R.id.textCurrentUser)).setText("UserId = " + res.userId);
         updateMenuStatus();
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 100)).executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                final VKApiFeedPage page = (VKApiFeedPage) response.parsedModel;
-                final Dao<CachedUser, Integer> userDao = DbHelper.get().getCachedUserDao();
-                final Dao<CachedGroup, Integer> groupDao = DbHelper.get().getCachedGroupDao();
-                final ArrayList<VKApiFeedItem> feed = new ArrayList<VKApiFeedItem>();
-                for (VKApiFeedItem item : page.items) {
-                    if (item.type.equals(VKApiFeedItem.TYPE_POST)) {
-                        feed.add(item);
-                    }
-                }
-                final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
-                try {
-                    userDao.callBatchTasks(new Callable<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            for (VKApiUser u : page.profiles) {
-                                userDao.createOrUpdate(new CachedUser(u));
-                            }
-                            return null;
-                        }
-                    });
-                    groupDao.callBatchTasks(new Callable<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            for (VKApiCommunity g : page.groups) {
-                                groupDao.createOrUpdate(new CachedGroup(g));
-                            }
-                            return null;
-                        }
-                    });
-                    itemDao.callBatchTasks(new Callable<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            for (int i = 0; i < feed.size(); i++) {
-                                CachedFeedItem item = new CachedFeedItem(feed.get(i));
-                                if (i + 1 == feed.size()) {
-                                    item.nextPageToLoad = page.next_from;
-                                } else {
-                                    item.nextPageToLoad = "";
-                                }
-                                List<CachedFeedItem> old =
-                                        itemDao.query(
-                                                itemDao.queryBuilder()
-                                                        .selectColumns("nextPageToLoad")
-                                                        .where().eq("id", item.id).prepare());
-                                if (!old.isEmpty() && old.get(0).nextPageToLoad.isEmpty()) {
-                                    item.nextPageToLoad = "";
-                                }
-                                itemDao.createOrUpdate(item);
-                            }
-                            return null;
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e(TAG, "Unable to update db with received feed items", e);
-                }
-                updateFeed();
-                Log.d(TAG, "next_from=" + page.next_from);
-            }
-
-            @Override
-            public void onError(VKError error) {
-                Toast.makeText(MainActivity.this, "Error: " + error.toString(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
-                Toast.makeText(MainActivity.this, String.format("Progress %d/%d", bytesLoaded, bytesTotal), Toast.LENGTH_SHORT).show();
-            }
-        });
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 100)).executeWithListener(feedGetListener);
     }
 
     private void updateFeed() {
