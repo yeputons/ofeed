@@ -77,30 +77,13 @@ public class FeedListViewAdapter extends BaseAdapter {
         final CachedFeedItem feedItem = getItem(position);
         if (feedItem.isPageEnd()) {
             // Load more
-            if (postView == null || postView.findViewById(R.id.buttonLoadMore) == null) {
-                postView = View.inflate(mainActivity, R.layout.load_more, null);
+            if (postView == null || !(postView instanceof LoadMoreView)) {
+                postView = new LoadMoreView(mainActivity, pageLoadsInProgress);
             }
 
-            final Button buttonLoadMore = (Button) postView.findViewById(R.id.buttonLoadMore);
-            buttonLoadMore.setTag(feedItem.nextPageToLoad);
-            if (pageLoadsInProgress.contains(feedItem.nextPageToLoad)) {
-                buttonLoadMore.setText("Loading...");
-                buttonLoadMore.setEnabled(false);
-            } else {
-                buttonLoadMore.setText("Load feed here...");
-                buttonLoadMore.setEnabled(true);
-            }
-            buttonLoadMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (view.getTag() == feedItem.nextPageToLoad) {
-                        buttonLoadMore.setText("Loading...");
-                        buttonLoadMore.setEnabled(false);
-                        pageLoadsInProgress.add(feedItem.nextPageToLoad);
-                        mainActivity.loadFrom(feedItem.nextPageToLoad);
-                    }
-                }
-            });
+            LoadMoreView loadMoreView = (LoadMoreView) postView;
+            loadMoreView.setNextPageToLoad(feedItem.nextPageToLoad);
+            loadMoreView.updateButtonState();
             return postView;
         }
         if (feedItem.feedItem == null) {
