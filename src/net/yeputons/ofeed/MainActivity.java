@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +50,20 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
             onResult(VKAccessToken.currentToken());
         }
         adapter = new FeedListViewAdapter(this);
-        ((ListView) findViewById(R.id.listFeed)).setAdapter(adapter);
+
+        ListView listFeed = (ListView) findViewById(R.id.listFeed);
+        listFeed.setAdapter(adapter);
+        listFeed.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                VKApiFeedItem feedItem = adapter.getItem(position).feedItem;
+                if (feedItem != null) {
+                    Intent intent = new Intent(MainActivity.this, PostActivity.class);
+                    intent.putExtra(PostActivity.EXTRA_POST, feedItem);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
