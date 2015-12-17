@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = WebResourcesCache.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static volatile DbHelper dbHelper;
 
     private volatile Dao<CachedWebResource, String> cachedWebResourcesDao;
@@ -29,6 +29,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
             TableUtils.createTable(connectionSource, CachedWebResource.class);
+            TableUtils.createTable(connectionSource, CachedFeedItem.class);
         } catch (SQLException e) {
             Log.e(TAG, "Erro while creating DB", e);
             throw new RuntimeException(e);
@@ -37,7 +38,27 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
-        throw new UnsupportedOperationException();
+        if (oldVer == newVer) {
+            return;
+        }
+        if (newVer != DATABASE_VERSION) {
+            throw new UnsupportedOperationException();
+        }
+        if (oldVer < 2) {
+            throw new UnsupportedOperationException();
+        }
+        if (oldVer == 2) {
+            try {
+                TableUtils.createTable(connectionSource, CachedFeedItem.class);
+            } catch (SQLException e) {
+                Log.e(TAG, "Error while creating CachedFeedItem table");
+                throw new RuntimeException(e);
+            }
+            oldVer++;
+        }
+        if (oldVer != newVer) {
+            throw new AssertionError("Internal error during db migration");
+        }
     }
 
     @NonNull
