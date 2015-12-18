@@ -37,6 +37,7 @@ public class PostView extends LinearLayout {
     private final TextView postDate;
     private final DownloadableImageView postAuthorPhoto;
     private final PhotoAttachmentsView postPhotoAttachments;
+    private final LinkAttachmentsView postLinkAttachments;
 
     private final View postCopy;
     private final TextView postCopyAuthorName;
@@ -44,6 +45,7 @@ public class PostView extends LinearLayout {
     private final TextView postCopyDate;
     private final DownloadableImageView postCopyAuthorPhoto;
     private final PhotoAttachmentsView postCopyPhotoAttachments;
+    private final LinkAttachmentsView postCopyLinkAttachments;
 
     public PostView(Context context) {
         this(context, null, 0);
@@ -61,6 +63,7 @@ public class PostView extends LinearLayout {
         postDate = (TextView) findViewById(R.id.postDate);
         postAuthorPhoto = (DownloadableImageView) findViewById(R.id.postAuthorPhoto);
         postPhotoAttachments = (PhotoAttachmentsView) findViewById(R.id.postPhotoAttachments);
+        postLinkAttachments = (LinkAttachmentsView) findViewById(R.id.postLinkAttachments);
 
         postCopy = findViewById(R.id.postCopy);
         postCopyAuthorName = (TextView) findViewById(R.id.postCopyAuthorName);
@@ -68,6 +71,7 @@ public class PostView extends LinearLayout {
         postCopyDate = (TextView) findViewById(R.id.postCopyDate);
         postCopyAuthorPhoto = (DownloadableImageView) findViewById(R.id.postCopyAuthorPhoto);
         postCopyPhotoAttachments = (PhotoAttachmentsView) findViewById(R.id.postCopyPhotoAttachments);
+        postCopyLinkAttachments = (LinkAttachmentsView) findViewById(R.id.postCopyLinkAttachments);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PostView, 0, 0);
         try {
@@ -100,6 +104,7 @@ public class PostView extends LinearLayout {
         postAuthorPhoto.setDownloadableImageUri(author.imageUriStr);
         postAuthorName.setText(author.name);
         postPhotoAttachments.setAttachments(post.attachments);
+        postLinkAttachments.setAttachments(post.attachments);
 
         if (post.copy_history == null || post.copy_history.size() == 0) {
             postCopy.setVisibility(GONE);
@@ -113,6 +118,7 @@ public class PostView extends LinearLayout {
             postCopyAuthorPhoto.setDownloadableImageUri(copyAuthor.imageUriStr);
             postCopyAuthorName.setText(copyAuthor.name);
             postCopyPhotoAttachments.setAttachments(copyPost.attachments);
+            postCopyLinkAttachments.setAttachments(post.attachments);
         }
     }
 

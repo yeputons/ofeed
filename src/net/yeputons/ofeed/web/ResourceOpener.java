@@ -15,7 +15,11 @@ public class ResourceOpener {
     public void openResource(@NonNull WebResource r) {
         Uri uri = Uri.parse(r.getActualUri().toString());
         Intent intentChrome = new Intent(Intent.ACTION_VIEW);
-        intentChrome.setDataAndType(uri, "multipart/related");
+        if (uri.getScheme().equalsIgnoreCase("file")) {
+            intentChrome.setDataAndType(uri, "multipart/related");
+        } else {
+            intentChrome.setData(uri);
+        }
         context.startActivity(intentChrome);
 
 //        Intent intentDefault = new Intent(Intent.ACTION_VIEW);
