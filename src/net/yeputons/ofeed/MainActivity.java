@@ -2,6 +2,7 @@ package net.yeputons.ofeed;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -242,6 +243,18 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                         return null;
                     }
                 });
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        for (VKApiUser u : page.profiles) {
+                            WebResourcesCache.getDownloadingWebResource(URI.create(u.photo_100));
+                        }
+                        for (VKApiCommunity g : page.groups) {
+                            WebResourcesCache.getDownloadingWebResource(URI.create(g.photo_100));
+                        }
+                        return null;
+                    }
+                }.execute();
                 itemDao.callBatchTasks(new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
