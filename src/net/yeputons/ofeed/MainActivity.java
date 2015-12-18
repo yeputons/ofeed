@@ -49,6 +49,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
 
         ListView listFeed = (ListView) findViewById(R.id.listFeed);
         listFeed.setAdapter(adapter);
+        listFeed.setEmptyView(findViewById(R.id.textEmptyFeed));
         listFeed.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {

@@ -5,6 +5,12 @@
               android:layout_height="fill_parent"
         >
 
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Click &apos;Load beginning&apos; in the menu"
+            android:id="@+id/textEmptyFeed" android:gravity="center_horizontal" android:visibility="gone"/>
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
