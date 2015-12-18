@@ -118,7 +118,7 @@ public class PostView extends LinearLayout {
             postCopyAuthorPhoto.setDownloadableImageUri(copyAuthor.imageUriStr);
             postCopyAuthorName.setText(copyAuthor.name);
             postCopyPhotoAttachments.setAttachments(copyPost.attachments);
-            postCopyLinkAttachments.setAttachments(post.attachments);
+            postCopyLinkAttachments.setAttachments(copyPost.attachments);
         }
     }
 
