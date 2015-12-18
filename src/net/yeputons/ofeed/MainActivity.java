@@ -272,19 +272,22 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                         boolean pageDoesNotContinue = true;
                         for (int i = 0; i < feed.size(); i++) {
                             CachedFeedItem item = feed.get(i);
+                            CachedFeedItem old =
+                                    itemDao.queryForFirst(
+                                            itemDao.queryBuilder()
+                                                    .selectColumns("nextPageToLoad")
+                                                    .where().eq("id", item.id).prepare());
                             if (i + 1 == feed.size()) {
-                                List<CachedFeedItem> old =
-                                        itemDao.query(
-                                                itemDao.queryBuilder()
-                                                        .selectColumns("nextPageToLoad")
-                                                        .where().eq("id", item.id).prepare());
-                                if (!old.isEmpty() && old.get(0).nextPageToLoad.isEmpty()) {
+                                if (old != null && old.nextPageToLoad.isEmpty()) {
                                     item.nextPageToLoad = "";
                                     pageDoesNotContinue = false;
                                 } else {
                                     item.nextPageToLoad = page.next_from;
                                 }
                             } else {
+                                if (old != null && !old.nextPageToLoad.isEmpty()) {
+                                    itemDao.deleteById(CachedFeedItem.getPageEndId(old.nextPageToLoad));
+                                }
                                 item.nextPageToLoad = "";
                             }
                             itemDao.createOrUpdate(item);
