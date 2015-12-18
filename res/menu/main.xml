@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="Log in" android:id="@+id/menuItemLogin" android:onClick="login" />
     <item android:title="Load beginning" android:id="@+id/menuItemLoadBeginning" android:onClick="loadBeginning" />
+    <item android:title="Load step=2" android:id="@+id/menuItemLoadStep2" android:onClick="loadStep2" />
+    <item android:title="Load step=50" android:id="@+id/menuItemLoadStep50" android:onClick="loadStep50" />
     <item android:title="Clear cache" android:id="@+id/menuItemClearCache" android:onClick="clearCache" />
     <item android:title="Log out" android:id="@+id/menuItemLogout" android:onClick="logout" />
 </menu>

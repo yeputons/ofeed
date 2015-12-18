@@ -38,6 +38,7 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     private static final String TAG = "ofeed";
     private Menu optionsMenu;
     private FeedListViewAdapter adapter;
+    private int loadStep = 50;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,11 +96,11 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     }
 
     public void loadBeginning(MenuItem item) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 50, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST)).executeWithListener(feedGetListener);
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, loadStep, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST)).executeWithListener(feedGetListener);
     }
 
     public void loadFrom(final String startFrom) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 50, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, loadStep, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 feedGetListener.onComplete(response);
@@ -138,6 +139,14 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    public void loadStep2(MenuItem item) {
+        loadStep = 2;
+    }
+
+    public void loadStep50(MenuItem item) {
+        loadStep = 50;
     }
 
     public void clearCache(MenuItem item) {
