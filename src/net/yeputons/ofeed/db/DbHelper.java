@@ -16,13 +16,14 @@ import java.sql.SQLException;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final String TAG = WebResourcesCache.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static volatile DbHelper dbHelper;
 
     private volatile Dao<CachedWebResource, String> cachedWebResourcesDao;
     private volatile Dao<CachedFeedItem, String> cachedFeedItemDao;
     private volatile Dao<CachedUser, Integer> cachedUserDao;
     private volatile Dao<CachedGroup, Integer> cachedGroupDao;
+    private volatile Dao<CachedWebPage, String> cachedWebPageDao;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +36,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, CachedFeedItem.class);
             TableUtils.createTable(connectionSource, CachedUser.class);
             TableUtils.createTable(connectionSource, CachedGroup.class);
+            TableUtils.createTable(connectionSource, CachedWebPage.class);
         } catch (SQLException e) {
             Log.e(TAG, "Error while creating DB", e);
             throw new RuntimeException(e);
@@ -69,6 +71,14 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
                 TableUtils.createTable(connectionSource, CachedUser.class);
             } catch (SQLException e) {
                 Log.e(TAG, "Error while creating CachedGroup and CachedUser tables");
+                throw new RuntimeException(e);
+            }
+        }
+        if (oldVer <= 8) {
+            try {
+                TableUtils.createTable(connectionSource, CachedWebPage.class);
+            } catch (SQLException e) {
+                Log.e(TAG, "Error while creating CachedWebPage tables");
                 throw new RuntimeException(e);
             }
         }
@@ -140,6 +150,23 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return cachedGroupDao;
+    }
+
+    @NonNull
+    public Dao<CachedWebPage, String> getCachedWebPageDao() {
+        if (cachedWebPageDao == null) {
+            synchronized (this) {
+                if (cachedWebPageDao == null) {
+                    try {
+                        cachedWebPageDao = DaoManager.createDao(getConnectionSource(), CachedWebPage.class);
+                    } catch (SQLException e) {
+                        Log.e(TAG, "Cannot create DAO", e);
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return cachedWebPageDao;
     }
 
     @NonNull

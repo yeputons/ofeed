@@ -21,11 +21,11 @@ import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.*;
 import com.vk.sdk.api.methods.VKApiFeed;
 import com.vk.sdk.api.model.*;
-import net.yeputons.ofeed.db.CachedFeedItem;
-import net.yeputons.ofeed.db.CachedGroup;
-import net.yeputons.ofeed.db.CachedUser;
-import net.yeputons.ofeed.db.DbHelper;
+import net.yeputons.ofeed.db.*;
+import net.yeputons.ofeed.web.*;
+import net.yeputons.ofeed.web.dmanager.ThreadPoolResourceDownloader;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -189,6 +189,37 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 }
                 occuredItems.add(item2.id);
                 feed.add(item2);
+                if (item.post != null && item.post.attachments != null) {
+                    for (VKAttachments.VKApiAttachment a : item.post.attachments) {
+                        if (a instanceof VKApiLink) {
+                            VKApiLink l = (VKApiLink) a;
+                            final URI uri = URI.create(l.url);
+                            if (uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("https")) {
+                                DeepWebPageSaver saver = new DeepWebPageSaver(OfeedApplication.getDownloader());
+                                final WebResource resource = saver.savePage(uri);
+                                saver.setDownloadCompleteListener(new DownloadCompleteListener() {
+                                    @Override
+                                    public void onDownloadComplete() {
+                                        CachedWebPage page = new CachedWebPage();
+                                        page.uri = uri.toString();
+                                        ResourceDownload d = resource.getDownloaded();
+                                        if (d == null) {
+                                            Log.e(TAG, "Oops, unable to deep save web page");
+                                            return;
+                                        }
+                                        page.localFile = d.getLocalFile().getAbsolutePath();
+                                        try {
+                                            DbHelper.get().getCachedWebPageDao().create(page);
+                                            adapter.notifyDataSetChanged();
+                                        } catch (SQLException e) {
+                                            Log.e(TAG, "Cannot save deep downloaded page info to db", e);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
             }
             final CachedFeedItem pageEndPlaceholder = new CachedFeedItem(page.items[page.items.length - 1], page.next_from);
             final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
