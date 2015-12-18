@@ -94,11 +94,11 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     }
 
     public void loadBeginning(MenuItem item) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST)).executeWithListener(feedGetListener);
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 50, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST)).executeWithListener(feedGetListener);
     }
 
     public void loadFrom(final String startFrom) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 2, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
+        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, 50, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 feedGetListener.onComplete(response);
