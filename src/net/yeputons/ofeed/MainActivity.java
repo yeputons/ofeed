@@ -305,7 +305,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     @Override
     public void onResult(final VKAccessToken res) {
         updateMenuStatus();
-        loadBeginning(null);
     }
 
     @Override
