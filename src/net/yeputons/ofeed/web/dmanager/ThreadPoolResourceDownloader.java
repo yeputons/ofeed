@@ -59,6 +59,7 @@ public class ThreadPoolResourceDownloader extends ResourceToFileDownloader {
                 }
 
                 InputStream input = urlConnection.getInputStream();
+                destination.getParentFile().mkdirs();
                 FileOutputStream output = new FileOutputStream(destination);
 
                 byte[] buffer = new byte[4 * 1024];
