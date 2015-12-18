@@ -45,12 +45,6 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        if (VKAccessToken.currentToken() == null) {
-            logout(null);
-            login(null);
-        } else {
-            onResult(VKAccessToken.currentToken());
-        }
         adapter = new FeedListViewAdapter(this);
 
         ListView listFeed = (ListView) findViewById(R.id.listFeed);
@@ -66,6 +60,13 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                 }
             }
         });
+
+        if (VKAccessToken.currentToken() == null) {
+            logout(null);
+            login(null);
+        } else {
+            onResult(VKAccessToken.currentToken());
+        }
     }
 
     @Override
