@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DownloadCompleteBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = DownloadCompleteBroadcastReceiver.class.getName();
     private static final Map<Long, List<DownloadCompleteListener>> listeners = new HashMap<>();
 
     public static void addCompleteListener(long id, @NonNull DownloadCompleteListener l) {
@@ -35,7 +36,7 @@ public class DownloadCompleteBroadcastReceiver extends BroadcastReceiver {
         synchronized (listeners) {
             List<DownloadCompleteListener> ls = listeners.remove(id);
             if (ls != null) {
-                Log.i("TAG", "Download completed: " + id);
+                Log.i(TAG, "Download completed: " + id);
                 for (DownloadCompleteListener l : ls) {
                     l.onDownloadComplete();
                 }
