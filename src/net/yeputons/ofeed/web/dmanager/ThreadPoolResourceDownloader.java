@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ThreadPoolResourceDownloader extends ResourceToFileDownloader {
-    static private final String TAG = ThreadPoolResourceDownloader.class.getName();
+    private static final String TAG = ThreadPoolResourceDownloader.class.getName();
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
 

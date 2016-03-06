@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class MainActivity extends Activity implements VKCallback<VKAccessToken> {
-    private static final String TAG = "ofeed";
+    private static final String TAG = MainActivity.class.getName();
     private Menu optionsMenu;
     private FeedListViewAdapter adapter;
     private int loadStep = 50;

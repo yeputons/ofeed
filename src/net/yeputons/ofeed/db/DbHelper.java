@@ -14,7 +14,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 
 public class DbHelper extends OrmLiteSqliteOpenHelper {
-    private static final String TAG = WebResourcesCache.class.getName();
+    private static final String TAG = DbHelper.class.getName();
     private static final String DATABASE_NAME = "ofeed.db";
     private static final int DATABASE_VERSION = 9;
     private static volatile DbHelper dbHelper;

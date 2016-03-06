@@ -15,7 +15,7 @@ import java.io.File;
 import java.net.URI;
 
 public class DownloadManagerResourceDownloader extends ResourceToFileDownloader {
-    static private final String TAG = DownloadManagerResourceDownloader.class.getName();
+    private static final String TAG = DownloadManagerResourceDownloader.class.getName();
 
     private final DownloadManager downloadManager;
 
