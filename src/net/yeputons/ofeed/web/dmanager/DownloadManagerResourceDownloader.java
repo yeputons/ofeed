@@ -32,6 +32,10 @@ public class DownloadManagerResourceDownloader extends ResourceToFileDownloader 
         return new DmResourceDownload(uri, destination, downloadManager);
     }
 
+    @Override
+    public void shutdown() {
+    }
+
     private static class DmResourceDownload implements ResourceDownload {
         @NonNull  private final URI remoteUri;
         @NonNull  private final File localFile;
