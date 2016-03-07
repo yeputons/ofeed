@@ -17,11 +17,14 @@ import java.util.WeakHashMap;
 
 public class WebResourcesCache {
     private static final String TAG = WebResourcesCache.class.getName();
-    private static final WeakHashMap<URI, WebResource> inMemoryResources = new WeakHashMap<>();
+    private static final WeakHashMap<URI, WebResource> IN_MEMORY_RESOURCES = new WeakHashMap<>();
+
+    private WebResourcesCache() {
+    }
 
     @NonNull
     private static synchronized WebResource getWebResource(@NonNull URI uri) {
-        WebResource result = inMemoryResources.get(uri);
+        WebResource result = IN_MEMORY_RESOURCES.get(uri);
         if (result != null) {
             return result;
         }
@@ -51,13 +54,13 @@ public class WebResourcesCache {
                 }
             });
         }
-        inMemoryResources.put(uri, result);
+        IN_MEMORY_RESOURCES.put(uri, result);
         return result;
     }
 
     @Nullable
     public static WebResource getCachedDownloadingWebResource(@NonNull URI uri) {
-        return inMemoryResources.get(uri);
+        return IN_MEMORY_RESOURCES.get(uri);
     }
 
     @NonNull

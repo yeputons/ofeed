@@ -10,14 +10,14 @@ import java.sql.SQLException;
 
 public class VKApiFeedItemPersister extends ByteArrayType {
     // https://github.com/j256/ormlite-jdbc/blob/master/src/test/java/com/j256/ormlite/examples/datapersister/DateTimePersister.java
-    private static final VKApiFeedItemPersister singleTon = new VKApiFeedItemPersister();
+    private static final VKApiFeedItemPersister SINGLETON = new VKApiFeedItemPersister();
 
     private VKApiFeedItemPersister() {
         super(SqlType.BYTE_ARRAY, new Class<?>[] {VKApiFeedItem.class});
     }
 
     public static VKApiFeedItemPersister getSingleton() {
-        return singleTon;
+        return SINGLETON;
     }
 
     @Override

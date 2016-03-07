@@ -37,7 +37,7 @@ public class VKApiFeedPage extends VKApiModel {
         dest.writeString(next_from);
     }
 
-    public static Creator<VKApiFeedPage> CREATOR = new Creator<VKApiFeedPage>() {
+    public static final Creator<VKApiFeedPage> CREATOR = new Creator<VKApiFeedPage>() {
         public VKApiFeedPage createFromParcel(Parcel source) {
             return new VKApiFeedPage(source);
         }

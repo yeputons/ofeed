@@ -10,12 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ResourceToFileDownloader implements ResourceDownloader {
-    private static final Pattern extensionPattern = Pattern.compile("(\\.\\p{Alnum}+)$");
+    private static final Pattern EXTENSION_PATTERN = Pattern.compile("(\\.\\p{Alnum}+)$");
 
     @NonNull
     protected File getFileForUri(@NonNull URI uri) {
         String extension = "";
-        Matcher m = extensionPattern.matcher(uri.getPath());
+        Matcher m = EXTENSION_PATTERN.matcher(uri.getPath());
         if (m.find()) {
             extension = m.group(1);
         }

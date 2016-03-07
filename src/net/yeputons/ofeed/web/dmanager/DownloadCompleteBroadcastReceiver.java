@@ -15,15 +15,15 @@ import java.util.Map;
 
 public class DownloadCompleteBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = DownloadCompleteBroadcastReceiver.class.getName();
-    private static final Map<Long, List<DownloadCompleteListener>> listeners = new HashMap<>();
+    private static final Map<Long, List<DownloadCompleteListener>> LISTENERS = new HashMap<>();
 
     public static void addCompleteListener(long id, @NonNull DownloadCompleteListener l) {
-        synchronized (listeners) {
-            List<DownloadCompleteListener> ls = listeners.get(id);
+        synchronized (LISTENERS) {
+            List<DownloadCompleteListener> ls = LISTENERS.get(id);
             if (ls == null) {
                 ls = new ArrayList<DownloadCompleteListener>();
                 ls.add(l);
-                listeners.put(id, ls);
+                LISTENERS.put(id, ls);
             } else {
                 ls.add(l);
             }
@@ -33,8 +33,8 @@ public class DownloadCompleteBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-        synchronized (listeners) {
-            List<DownloadCompleteListener> ls = listeners.remove(id);
+        synchronized (LISTENERS) {
+            List<DownloadCompleteListener> ls = LISTENERS.remove(id);
             if (ls != null) {
                 Log.i(TAG, "Download completed: " + id);
                 for (DownloadCompleteListener l : ls) {

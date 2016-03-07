@@ -74,7 +74,7 @@ public class VKApiFeedItem extends VKApiModel {
         dest.writeParcelable(post.copy_history, flags);
     }
 
-    public static Creator<VKApiFeedItem> CREATOR = new Creator<VKApiFeedItem>() {
+    public static final Creator<VKApiFeedItem> CREATOR = new Creator<VKApiFeedItem>() {
         public VKApiFeedItem createFromParcel(Parcel source) {
             return new VKApiFeedItem(source);
         }
