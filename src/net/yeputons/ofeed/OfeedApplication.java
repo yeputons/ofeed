@@ -4,7 +4,6 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import com.vk.sdk.VKSdk;
 import net.yeputons.ofeed.db.DbHelper;
-import net.yeputons.ofeed.web.DeepWebPageSaver;
 import net.yeputons.ofeed.web.ResourceDownloader;
 import net.yeputons.ofeed.web.dmanager.ThreadPoolResourceDownloader;
 

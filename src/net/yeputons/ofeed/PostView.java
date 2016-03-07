@@ -2,33 +2,21 @@ package net.yeputons.ofeed;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.vk.sdk.api.model.VKApiPost;
 import net.yeputons.ofeed.db.CachedGroup;
 import net.yeputons.ofeed.db.CachedUser;
 import net.yeputons.ofeed.db.DbHelper;
-import net.yeputons.ofeed.db.WebResourcesCache;
-import net.yeputons.ofeed.web.DownloadCompleteListener;
-import net.yeputons.ofeed.web.ResourceDownload;
-import net.yeputons.ofeed.web.WebResource;
 
-import java.net.URI;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class PostView extends LinearLayout {
     private static final String TAG = PostView.class.getName();

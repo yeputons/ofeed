@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.vk.sdk.api.model.VKApiFeedItem;
-import com.vk.sdk.api.model.VKApiPost;
 
 public class PostActivity extends Activity {
     public static final String EXTRA_POST = PostActivity.class.getCanonicalName() + ".EXTRA_POST";

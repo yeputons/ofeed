@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.vk.sdk.api.model.VKApiFeedItem;
 import com.vk.sdk.api.model.VKApiUser;
 
 @DatabaseTable(tableName = "users")

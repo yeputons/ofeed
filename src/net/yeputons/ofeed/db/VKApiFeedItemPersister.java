@@ -1,12 +1,9 @@
 package net.yeputons.ofeed.db;
 
 import android.os.Parcel;
-import com.j256.ormlite.field.DataPersister;
 import com.j256.ormlite.field.FieldType;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.field.types.ByteArrayType;
-import com.vk.sdk.api.VKApi;
-import com.vk.sdk.api.methods.VKApiFeed;
 import com.vk.sdk.api.model.VKApiFeedItem;
 
 import java.sql.SQLException;

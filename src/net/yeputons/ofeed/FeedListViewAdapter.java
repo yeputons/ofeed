@@ -1,23 +1,15 @@
 package net.yeputons.ofeed;
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseAdapter;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.vk.sdk.api.model.VKApiPost;
-import net.yeputons.ofeed.db.*;
-import net.yeputons.ofeed.web.DownloadCompleteListener;
-import net.yeputons.ofeed.web.ResourceDownload;
-import net.yeputons.ofeed.web.WebResource;
+import net.yeputons.ofeed.db.CachedFeedItem;
+import net.yeputons.ofeed.db.DbHelper;
 
-import java.net.URI;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
