@@ -94,9 +94,7 @@ public class DownloadableImageView extends ImageView {
                 if (!imageUri.equals(resource.uri)) {
                     return;
                 }
-                if (d == null) {
-                    //Toast.makeText(getContext(), "Unable to load image", Toast.LENGTH_SHORT).show();
-                } else {
+                if (d != null) {
                     DownloadableImageView.super.setImageURI(resultingUri);
                 }
             }

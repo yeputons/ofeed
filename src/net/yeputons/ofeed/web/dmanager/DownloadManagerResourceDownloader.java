@@ -107,8 +107,9 @@ public class DownloadManagerResourceDownloader extends ResourceToFileDownloader 
                         return State.COMPLETED;
                     case DownloadManager.STATUS_FAILED:
                         return State.FAILED;
+                    default:
+                        throw new AssertionError("Invalid download status returned by DownloadManager");
                 }
-                throw new AssertionError("Invalid download status returned by DownloadManager");
             } finally {
                 c.close();
             }
