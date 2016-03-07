@@ -21,17 +21,5 @@ public class ResourceOpener {
             intentChrome.setData(uri);
         }
         context.startActivity(intentChrome);
-
-//        Intent intentDefault = new Intent(Intent.ACTION_VIEW);
-//        intentDefault.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
-//        intentDefault.setDataAndType(uri, "html/text");
-//
-//        Intent intentOther = new Intent(Intent.ACTION_VIEW);
-//        intentDefault.addCategory(Intent.CATEGORY_BROWSABLE);
-//        intentDefault.setDataAndType(uri, "html/text");
-//
-//        Intent intentChooser = Intent.createChooser(intentChrome, "Open in...");
-//        intentChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { intentDefault, intentOther });
-//        context.startActivity(intentChooser);
     }
 }

@@ -62,7 +62,6 @@ public class DownloadManagerResourceDownloader extends ResourceToFileDownloader 
             request.setDestinationUri(Uri.fromFile(getLocalFile()));
             request.setTitle("O'Feed download");
             request.setDescription(remoteUri.toString());
-            //request.setVisibleInDownloadsUi(false);
             downloadManagerRelatedId = downloadManager.enqueue(request);
         }
 
