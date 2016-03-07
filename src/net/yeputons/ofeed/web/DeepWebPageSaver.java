@@ -131,7 +131,7 @@ public class DeepWebPageSaver implements WebPageSaver {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Unable to process web page", e);
         } finally {
             Log.d(TAG, "Completed processing web page");
             generalDownloadCompleteListener.onDownloadComplete();
