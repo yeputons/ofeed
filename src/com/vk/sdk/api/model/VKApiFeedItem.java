@@ -68,8 +68,8 @@ public class VKApiFeedItem extends VKApiModel {
         dest.writeString(type);
         dest.writeInt(source_id);
         dest.writeLong(date);
-        dest.writeByte(can_edit ? (byte)1 : (byte)0);
-        dest.writeByte(can_delete ? (byte)1 : (byte)0);
+        dest.writeByte(can_edit ? (byte) 1 : (byte) 0);
+        dest.writeByte(can_delete ? (byte) 1 : (byte) 0);
         dest.writeParcelable(post, flags);
         dest.writeParcelable(post.copy_history, flags);
     }

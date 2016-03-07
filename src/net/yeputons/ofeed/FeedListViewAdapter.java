@@ -35,7 +35,7 @@ public class FeedListViewAdapter extends BaseAdapter {
                 Log.e(TAG, "Too many feed items found (integer overflow!)");
                 return Integer.MAX_VALUE;
             }
-            return (int)answer;
+            return (int) answer;
         } catch (SQLException e) {
             Log.e(TAG, "Unable to get count of feed items", e);
             throw new RuntimeException(e);

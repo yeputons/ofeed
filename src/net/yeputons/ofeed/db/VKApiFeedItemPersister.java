@@ -13,7 +13,7 @@ public class VKApiFeedItemPersister extends ByteArrayType {
     private static final VKApiFeedItemPersister singleTon = new VKApiFeedItemPersister();
 
     private VKApiFeedItemPersister() {
-        super(SqlType.BYTE_ARRAY, new Class<?>[] { VKApiFeedItem.class });
+        super(SqlType.BYTE_ARRAY, new Class<?>[] {VKApiFeedItem.class});
     }
 
     public static VKApiFeedItemPersister getSingleton() {
