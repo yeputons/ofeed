@@ -48,7 +48,13 @@ public class PhotoAttachmentsView extends TableLayout {
         setVisibility(VISIBLE);
         for (VKApiPhoto p : photos) {
             DownloadableImageView imageView = new DownloadableImageView(getContext());
-            imageView.setDownloadableImageUri(photos.size() == 1 && p.photo_1280 != null && !p.photo_1280.isEmpty() ? p.photo_1280 : p.photo_604);
+            boolean downloadBigPhoto = false;
+            if (photos.size() == 1) {
+                // Download big picture iff there is only one picture to show (otherwise they're packed
+                // tight) and big photo does actually exist
+                downloadBigPhoto = p.photo_1280 != null && !p.photo_1280.isEmpty();
+            }
+            imageView.setDownloadableImageUri(downloadBigPhoto ? p.photo_1280 : p.photo_604);
             TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
             params.leftMargin = 4;
             params.rightMargin = 4;

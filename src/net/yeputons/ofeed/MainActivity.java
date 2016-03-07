@@ -97,11 +97,18 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
     }
 
     public void loadBeginning(MenuItem item) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, loadStep, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST)).executeWithListener(feedGetListener);
+        new VKApiFeed().get(VKParameters.from(
+                VKApiConst.COUNT, loadStep,
+                VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST
+        )).executeWithListener(feedGetListener);
     }
 
     public void loadFrom(final String startFrom) {
-        new VKApiFeed().get(VKParameters.from(VKApiConst.COUNT, loadStep, VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST, VKApiFeed.START_FROM, startFrom)).executeWithListener(new VKRequest.VKRequestListener() {
+        new VKApiFeed().get(VKParameters.from(
+                VKApiConst.COUNT, loadStep,
+                VKApiFeed.FILTERS, VKApiFeed.FILTERS_POST,
+                VKApiFeed.START_FROM, startFrom
+        )).executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 feedGetListener.onComplete(response);
@@ -233,7 +240,8 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
                     }
                 }
             }
-            final CachedFeedItem pageEndPlaceholder = new CachedFeedItem(page.items[page.items.length - 1], page.next_from);
+            final CachedFeedItem pageEndPlaceholder =
+                    new CachedFeedItem(page.items[page.items.length - 1], page.next_from);
             final Dao<CachedFeedItem, String> itemDao = DbHelper.get().getCachedFeedItemDao();
             try {
                 userDao.callBatchTasks(new Callable<Void>() {
@@ -312,7 +320,11 @@ public class MainActivity extends Activity implements VKCallback<VKAccessToken> 
 
         @Override
         public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
-            Toast.makeText(MainActivity.this, String.format("Progress %d/%d", bytesLoaded, bytesTotal), Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    MainActivity.this,
+                    String.format("Progress %d/%d", bytesLoaded, bytesTotal),
+                    Toast.LENGTH_SHORT
+            ).show();
         }
     };
 

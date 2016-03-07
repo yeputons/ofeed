@@ -55,7 +55,8 @@ public class ThreadPoolResourceDownloader extends ResourceToFileDownloader {
 
                 int responseCode = urlConnection.getResponseCode();
                 if (responseCode / 100 != 2) {
-                    Log.w(TAG, "Strange response code during download: " + responseCode + " " + urlConnection.getResponseMessage());
+                    Log.w(TAG, "Strange response code during download: " + responseCode
+                            + " " + urlConnection.getResponseMessage());
                 }
 
                 InputStream input = urlConnection.getInputStream();

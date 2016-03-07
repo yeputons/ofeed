@@ -9,7 +9,9 @@ import com.vk.sdk.api.model.VKApiFeedItem;
 import java.sql.SQLException;
 
 public class VKApiFeedItemPersister extends ByteArrayType {
+    //CHECKSTYLE.OFF: LineLength
     // https://github.com/j256/ormlite-jdbc/blob/master/src/test/java/com/j256/ormlite/examples/datapersister/DateTimePersister.java
+    //CHECKSTYLE.ON: LineLength
     private static final VKApiFeedItemPersister SINGLETON = new VKApiFeedItemPersister();
 
     private VKApiFeedItemPersister() {

@@ -101,7 +101,9 @@ public class DeepWebPageSaver implements WebPageSaver {
         ResourceDownload d = mainPage.getDownloaded();
         try {
             if (d == null) {
-                Log.e(TAG, "Page resource downloading is requested before page download is completed. Probably, page download failed");
+                Log.e(TAG,
+                        "Page resource downloading is requested before page download is completed."
+                        + " Probably, page download failed");
                 return;
             }
             Log.d(TAG, "Loading downloaded web page...");

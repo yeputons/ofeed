@@ -16,7 +16,8 @@ public class OfeedApplication extends Application {
         super.onCreate();
         VKSdk.initialize(getApplicationContext());
         DbHelper.initializeHelper(getApplicationContext());
-        //downloader = new DownloadManagerResourceDownloader((DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE));
+        //downloader = new DownloadManagerResourceDownloader(
+        //        (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE));
         downloader = new ThreadPoolResourceDownloader();
     }
 
