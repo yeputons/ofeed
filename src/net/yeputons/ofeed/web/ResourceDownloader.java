@@ -4,5 +4,5 @@ import android.support.annotation.NonNull;
 
 public interface ResourceDownloader {
     @NonNull
-    public ResourceDownload createDownload(@NonNull WebResource resource);
+    ResourceDownload createDownload(@NonNull WebResource resource);
 }

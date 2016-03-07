@@ -33,15 +33,15 @@ public class DownloadManagerResourceDownloader extends ResourceToFileDownloader 
     }
 
     private static class DmResourceDownload implements ResourceDownload {
-        @NonNull  final private URI remoteUri;
-        @NonNull  final private File localFile;
-        @NonNull  final private DownloadManager downloadManager;
+        @NonNull  private final URI remoteUri;
+        @NonNull  private final File localFile;
+        @NonNull  private final DownloadManager downloadManager;
         @Nullable
         private Long downloadManagerRelatedId;
 
         private static final String TAG = DmResourceDownload.class.getName();
 
-        public DmResourceDownload(@NonNull URI remoteUri, @NonNull File localFile, @NonNull DownloadManager downloadManager) {
+        DmResourceDownload(@NonNull URI remoteUri, @NonNull File localFile, @NonNull DownloadManager downloadManager) {
             this.remoteUri = remoteUri;
             this.localFile = localFile;
             this.downloadManager = downloadManager;

@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ResourceToFileDownloader implements ResourceDownloader {
-    static private final Pattern extensionPattern = Pattern.compile("(\\.\\p{Alnum}+)$");
+    private static final Pattern extensionPattern = Pattern.compile("(\\.\\p{Alnum}+)$");
 
     @NonNull
     protected File getFileForUri(@NonNull URI uri) {

@@ -97,7 +97,7 @@ public class LinkAttachmentsView extends LinearLayout {
                             return new CachedResourceDownload(localFile);
                         }
                     });
-                };
+                }
             }
             String title = l.title != null && !l.title.isEmpty() ? l.title : l.url;
             if (resource.getDownloaded() != null) {

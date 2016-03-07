@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.io.File;
 
 public interface ResourceDownload {
-    public static enum State {
+    enum State {
         NOT_STARTED,
         IN_PROGRESS,
         PAUSED,
@@ -13,13 +13,13 @@ public interface ResourceDownload {
         FAILED
     }
 
-    abstract public void addDownloadCompleteListener(DownloadCompleteListener listener);
+    void addDownloadCompleteListener(DownloadCompleteListener listener);
 
     @NonNull
-    abstract public State getState();
+    State getState();
 
     @NonNull
-    abstract public File getLocalFile();
+    File getLocalFile();
 
-    public abstract void start();
+    void start();
 }

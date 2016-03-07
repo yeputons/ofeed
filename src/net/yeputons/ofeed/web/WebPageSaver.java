@@ -6,5 +6,5 @@ import java.net.URI;
 
 public interface WebPageSaver {
     @NonNull
-    public WebResource savePage(@NonNull URI uri);
+    WebResource savePage(@NonNull URI uri);
 }

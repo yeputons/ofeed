@@ -9,8 +9,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class WebResource {
-    @NonNull final public URI uri;
-    final protected Deque<ResourceDownload> downloads = new ArrayDeque<>();
+    @NonNull public final URI uri;
+    protected final Deque<ResourceDownload> downloads = new ArrayDeque<>();
 
     public WebResource(@NonNull URI uri) {
         this.uri = uri;

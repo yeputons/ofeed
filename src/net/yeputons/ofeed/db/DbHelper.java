@@ -170,21 +170,21 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
     }
 
     @NonNull
-    public synchronized static DbHelper get() {
+    public static synchronized DbHelper get() {
         if (dbHelper == null) {
             throw new IllegalStateException("DbHelper is not initialized yet");
         }
         return dbHelper;
     }
 
-    public synchronized static void initializeHelper(Context context) {
+    public static synchronized void initializeHelper(Context context) {
         if (dbHelper != null) {
             throw new IllegalStateException("DbHelper is already initialized");
         }
         dbHelper = OpenHelperManager.getHelper(context, DbHelper.class);
     }
 
-    public synchronized static void deinitializeHelper() {
+    public static synchronized void deinitializeHelper() {
         if (dbHelper == null) {
             throw new IllegalStateException("DbHelper is not initialized");
         }
