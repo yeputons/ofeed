@@ -12,25 +12,25 @@ public class CachedUser {
     @NonNull
     public int id;
 
-    @DatabaseField
+    @DatabaseField(columnName = "first_name")
     @Nullable
-    public String first_name;
+    public String firstName;
 
-    @DatabaseField
+    @DatabaseField(columnName = "last_name")
     @Nullable
-    public String last_name;
+    public String lastName;
 
-    @DatabaseField
+    @DatabaseField(columnName = "photo_100")
     @Nullable
-    public String photo_100;
+    public String photo100;
 
     public CachedUser() {
     }
 
     public CachedUser(VKApiUser user) {
         id = user.id;
-        first_name = user.first_name;
-        last_name = user.last_name;
-        photo_100 = user.photo_100;
+        firstName = user.first_name;
+        lastName = user.last_name;
+        photo100 = user.photo_100;
     }
 }

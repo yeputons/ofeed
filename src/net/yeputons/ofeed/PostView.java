@@ -110,26 +110,26 @@ public class PostView extends LinearLayout {
         }
     }
 
-    private static PostAuthorInformation getAuthorInformation(int from_id) {
-        if (from_id >= 0) {
+    private static PostAuthorInformation getAuthorInformation(int fromId) {
+        if (fromId >= 0) {
             CachedUser user = null;
             try {
-                user = DbHelper.get().getCachedUserDao().queryForId(from_id);
+                user = DbHelper.get().getCachedUserDao().queryForId(fromId);
             } catch (SQLException e) {
                 Log.e(TAG, "Unable to load user from db", e);
             }
             if (user != null) {
-                return new PostAuthorInformation(user.first_name + " " + user.last_name, user.photo_100);
+                return new PostAuthorInformation(user.firstName + " " + user.lastName, user.photo100);
             }
         } else {
             CachedGroup group = null;
             try {
-                group = DbHelper.get().getCachedGroupDao().queryForId(-from_id);
+                group = DbHelper.get().getCachedGroupDao().queryForId(-fromId);
             } catch (SQLException e) {
                 Log.e(TAG, "Unable to load group from db", e);
             }
             if (group != null) {
-                return new PostAuthorInformation(group.name == null ? "N/A" : group.name, group.photo_100);
+                return new PostAuthorInformation(group.name == null ? "N/A" : group.name, group.photo100);
             }
         }
         return new PostAuthorInformation("N/A", null);

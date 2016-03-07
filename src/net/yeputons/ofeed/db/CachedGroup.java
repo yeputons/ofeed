@@ -16,9 +16,9 @@ public class CachedGroup {
     @Nullable
     public String name;
 
-    @DatabaseField
+    @DatabaseField(columnName = "photo_100")
     @Nullable
-    public String photo_100;
+    public String photo100;
 
     public CachedGroup() {
     }
@@ -26,6 +26,6 @@ public class CachedGroup {
     public CachedGroup(VKApiCommunity group) {
         id = group.id;
         name = group.name;
-        photo_100 = group.photo_100;
+        photo100 = group.photo_100;
     }
 }
