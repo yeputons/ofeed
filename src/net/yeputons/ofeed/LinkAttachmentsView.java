@@ -96,6 +96,10 @@ public class LinkAttachmentsView extends LinearLayout {
                         public ResourceDownload createDownload(@NonNull WebResource resource) {
                             return new CachedResourceDownload(localFile);
                         }
+
+                        @Override
+                        public void shutdown() {
+                        }
                     });
                 }
             }

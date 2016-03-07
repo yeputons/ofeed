@@ -52,6 +52,10 @@ public class WebResourcesCache {
                 public ResourceDownload createDownload(@NonNull WebResource resource) {
                     return download;
                 }
+
+                @Override
+                public void shutdown() {
+                }
             });
         }
         IN_MEMORY_RESOURCES.put(uri, result);
