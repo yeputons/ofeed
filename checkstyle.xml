@@ -91,7 +91,14 @@
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
-        <module name="MemberName"/>
+        <module name="MemberName">
+            <property name="id" value="MemberNameRegular" />
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+        </module>
+        <module name="MemberName">
+            <property name="id" value="MemberNameVkSdk" />
+            <property name="format" value="^[a-z0-9_]+$" />
+        </module>
         <module name="MethodName"/>
         <module name="PackageName"/>
         <module name="ParameterName"/>
@@ -174,4 +181,8 @@
 
     </module>
 
+    <module name="SuppressionFilter">
+        <property name="file" value="checkstyle-suppressions.xml"/>
+        <property name="optional" value="false"/>
+    </module>
 </module>
