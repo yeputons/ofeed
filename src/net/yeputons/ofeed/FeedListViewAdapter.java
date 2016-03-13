@@ -30,7 +30,12 @@ public class FeedListViewAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         try {
-            return (int) itemDao.countOf(); // int overflow is unrealistic
+            long answer = itemDao.countOf();
+            if (answer > Integer.MAX_VALUE) {
+                Log.e(TAG, "Too many feed items found (integer overflow!)");
+                return Integer.MAX_VALUE;
+            }
+            return (int) answer;
         } catch (SQLException e) {
             Log.e(TAG, "Unable to get count of feed items", e);
             throw new RuntimeException(e);
